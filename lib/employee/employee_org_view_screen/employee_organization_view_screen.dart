@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:remote_collab_tool/common/appbar/appbar.dart';
 import 'package:remote_collab_tool/common/navbar/navbar.dart';
@@ -317,6 +316,9 @@ class _ChatScreenState extends State<ChatScreen> {
   ];
 
   final TextEditingController _controller = TextEditingController();
+  final TextEditingController _pollQuestionController = TextEditingController();
+  final TextEditingController _pollOptionController = TextEditingController();
+  List<String> pollOptions = [];
 
   void _sendMessage() {
     if (_controller.text.isEmpty) return;
@@ -327,12 +329,72 @@ class _ChatScreenState extends State<ChatScreen> {
     });
   }
 
+  void _createPoll() {
+    showDialog(
+      context: context,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setState) => AlertDialog(
+          title: Text("Create Poll"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: _pollQuestionController,
+                decoration: InputDecoration(hintText: "Poll Question"),
+              ),
+              TextField(
+                controller: _pollOptionController,
+                decoration: InputDecoration(hintText: "Poll Option"),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    if (_pollOptionController.text.isNotEmpty) {
+                      pollOptions.add(_pollOptionController.text);
+                      _pollOptionController.clear();
+                    }
+                  });
+                },
+                child: Text("Add Option"),
+              ),
+              ...pollOptions.map((option) => Text(option)).toList(),
+            ],
+          ),
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  messages.add(PollMessage(
+                    question: _pollQuestionController.text,
+                    options: pollOptions,
+                    votes: List.filled(pollOptions.length, 0),
+                  ));
+                  _pollQuestionController.clear();
+                  pollOptions.clear();
+                });
+                Navigator.of(context).pop();
+              },
+              child: Text("Create Poll"),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Pallete.bgColor,
-      appBar: createAppBar(),
-      bottomNavigationBar: MyBottomNavigationBar(),
+      appBar: AppBar(
+        title: Text('Chat'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.poll),
+            onPressed: _createPoll,
+          ),
+        ],
+      ),
       body: Column(
         children: <Widget>[
           Expanded(
@@ -341,7 +403,11 @@ class _ChatScreenState extends State<ChatScreen> {
               itemCount: messages.length,
               itemBuilder: (context, index) {
                 final message = messages[messages.length - 1 - index];
-                return ChatBubble(message: message);
+                if (message is PollMessage) {
+                  return PollWidget(poll: message);
+                } else {
+                  return ChatBubble(message: message);
+                }
               },
             ),
           ),
@@ -383,6 +449,18 @@ class Message {
   Message({required this.content, required this.sender, required this.isMe});
 }
 
+class PollMessage extends Message {
+  final String question;
+  final List<String> options;
+  final List<int> votes;
+
+  PollMessage({
+    required this.question,
+    required this.options,
+    required this.votes,
+  }) : super(content: question, sender: "Poll", isMe: false);
+}
+
 class ChatBubble extends StatelessWidget {
   final Message message;
 
@@ -421,6 +499,54 @@ class ChatBubble extends StatelessWidget {
             child: Text(message.content),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class PollWidget extends StatefulWidget {
+  final PollMessage poll;
+
+  PollWidget({required this.poll});
+
+  @override
+  _PollWidgetState createState() => _PollWidgetState();
+}
+
+class _PollWidgetState extends State<PollWidget> {
+  void _vote(int index) {
+    setState(() {
+      widget.poll.votes[index]++;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      color: Colors.pink[50],
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text(
+              widget.poll.question,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Colors.pink,
+              ),
+            ),
+            ...widget.poll.options.asMap().entries.map((entry) {
+              int index = entry.key;
+              String option = entry.value;
+              return ListTile(
+                title: Text(option),
+                trailing: Text(widget.poll.votes[index].toString()),
+                onTap: () => _vote(index),
+              );
+            }).toList(),
+          ],
+        ),
       ),
     );
   }
