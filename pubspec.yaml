@@ -56,6 +56,9 @@ dependencies:
   rich_text_controller: ^1.4.2
   flutter_markdown: ^0.7.1
   another_flutter_splash_screen: ^1.2.0
+  flutter_staggered_animations: ^1.1.1
+  confetti: ^0.7.0
+  lottie: ^3.1.2
 
 dev_dependencies:
   flutter_lints: ^3.0.0

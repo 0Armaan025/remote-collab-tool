@@ -30,8 +30,8 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
   @override
   void initState() {
     super.initState();
-    uid = sharedPreferences!.getString("uid");
-    orgID = sharedPreferences!.getString("orgID");
+    uid = sharedPreferences?.getString("uid");
+    orgID = sharedPreferences?.getString("orgID");
   }
 
   TextEditingController orgIDController = TextEditingController();
@@ -43,7 +43,7 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
       appBar: createAppBar(),
       bottomNavigationBar: MyBottomNavigationBar(),
       body: SingleChildScrollView(
-        child: orgID != ""
+        child: orgID != null && orgID!.isNotEmpty
             ? SafeArea(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),

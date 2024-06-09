@@ -20,7 +20,6 @@ class _EmployerMembersScreenState extends State<EmployerMembersScreen> {
     final size = MediaQuery.of(context).size;
 
     return Scaffold(
-      bottomNavigationBar: MyBottomNavigationBar(),
       backgroundColor: Pallete.bgColor,
       appBar: AppBar(
         title: Text('RCT', style: GoogleFonts.poppins(fontSize: 20)),
