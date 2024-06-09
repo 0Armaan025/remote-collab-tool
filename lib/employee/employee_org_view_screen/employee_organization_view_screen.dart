@@ -1,6 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:remote_collab_tool/common/navbar/navbar.dart';
+import 'package:remote_collab_tool/constants/utils/utils.dart';
+import 'package:remote_collab_tool/features/poll_screen/poll_list_screen.dart';
+import 'package:remote_collab_tool/features/pomodoro_timer/pomodoro_timer_screen.dart';
+import 'package:remote_collab_tool/features/share_files/share_files_screen.dart';
 import 'package:remote_collab_tool/theme/pallete.dart';
 
 class EmployeeOrganizationViewScreen extends StatefulWidget {
@@ -125,19 +131,24 @@ class _TasksScreenState extends State<TasksScreen> {
           _buildGroupmateTaskItem('Task C', Icons.close, 'Mike', '48h'),
           const SizedBox(height: 40),
           Center(
-            child: Container(
-              width: double.infinity,
-              height: size.height * 0.05,
-              margin: const EdgeInsets.symmetric(horizontal: 50),
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: Pallete.buttonColor,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Text(
-                "Share files 📁",
-                style: GoogleFonts.roboto(
-                  color: Colors.white,
+            child: InkWell(
+              onTap: () {
+                moveScreen(context: context, widget: ShareFilesScreen());
+              },
+              child: Container(
+                width: double.infinity,
+                height: size.height * 0.05,
+                margin: const EdgeInsets.symmetric(horizontal: 50),
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: Pallete.buttonColor,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  "Share files 📁",
+                  style: GoogleFonts.roboto(
+                    color: Colors.white,
+                  ),
                 ),
               ),
             ),
@@ -161,27 +172,32 @@ class _TasksScreenState extends State<TasksScreen> {
   }
 
   Widget _buildTaskItem(String taskName, int index) {
-    return ListTile(
-      title: Text(
-        taskName,
-        style: GoogleFonts.poppins(),
-      ),
-      trailing: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Checkbox(
-            value:
-                _taskCompletion[index], // Change this to manage task completion
-            onChanged: (value) {
-              setState(() {
-                _taskCompletion[index] = value!;
-              });
-            },
-          ),
-          SizedBox(width: 10),
-          // Timer Widget (You can replace this with your timer implementation)
-          _buildTimer('12h'),
-        ],
+    return InkWell(
+      onTap: () {
+        moveScreen(context: context, widget: PomodoroTimer());
+      },
+      child: ListTile(
+        title: Text(
+          taskName,
+          style: GoogleFonts.poppins(),
+        ),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Checkbox(
+              value: _taskCompletion[
+                  index], // Change this to manage task completion
+              onChanged: (value) {
+                setState(() {
+                  _taskCompletion[index] = value!;
+                });
+              },
+            ),
+            SizedBox(width: 10),
+            // Timer Widget (You can replace this with your timer implementation)
+            _buildTimer('12h'),
+          ],
+        ),
       ),
     );
   }
@@ -300,9 +316,148 @@ class MembersScreen extends StatelessWidget {
   }
 }
 
-class ChatScreen extends StatelessWidget {
+class ChatScreen extends StatefulWidget {
+  @override
+  _ChatScreenState createState() => _ChatScreenState();
+}
+
+class _ChatScreenState extends State<ChatScreen> {
+  final TextEditingController _controller = TextEditingController();
+
+  void _sendMessage() {
+    if (_controller.text.isEmpty) return;
+    FirebaseFirestore.instance.collection('messages').add({
+      'content': _controller.text,
+      'sender': FirebaseAuth.instance.currentUser?.uid ??
+          '', // Replace with actual user data
+      'timestamp': FieldValue.serverTimestamp(),
+    });
+    _controller.clear();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Center(child: Text('Chat Screen'));
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: Text('Chat'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.poll),
+            onPressed: () {
+              moveScreen(context: context, widget: PollListScreen());
+            },
+          ),
+        ],
+      ),
+      body: Column(
+        children: <Widget>[
+          Expanded(
+            child: StreamBuilder(
+              stream: FirebaseFirestore.instance
+                  .collection('messages')
+                  .orderBy('timestamp', descending: true)
+                  .snapshots(),
+              builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                if (!snapshot.hasData) {
+                  return Center(child: CircularProgressIndicator());
+                }
+                final messages = snapshot.data!.docs.map((doc) {
+                  return Message(
+                    content: doc['content'],
+                    sender: doc['sender'],
+                    isMe: doc['sender'] ==
+                        FirebaseAuth.instance.currentUser!
+                            .uid, // Replace with actual user check
+                  );
+                }).toList();
+                return ListView.builder(
+                  reverse: true,
+                  itemCount: messages.length,
+                  itemBuilder: (context, index) {
+                    return ChatBubble(message: messages[index]);
+                  },
+                );
+              },
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: <Widget>[
+                Expanded(
+                  child: TextField(
+                    controller: _controller,
+                    decoration: InputDecoration(
+                      hintText: 'Type a message',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(30.0),
+                      ),
+                      filled: true,
+                      fillColor: Colors.pink[50],
+                    ),
+                  ),
+                ),
+                IconButton(
+                  icon: Icon(Icons.send, color: Colors.pink),
+                  onPressed: _sendMessage,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class Message {
+  final String content;
+  final String sender;
+  final bool isMe;
+
+  Message({required this.content, required this.sender, required this.isMe});
+}
+
+class ChatBubble extends StatelessWidget {
+  final Message message;
+
+  const ChatBubble({Key? key, required this.message}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final borderRadius = BorderRadius.only(
+      topLeft: Radius.circular(12.0),
+      topRight: Radius.circular(12.0),
+      bottomLeft: message.isMe ? Radius.circular(12.0) : Radius.circular(0),
+      bottomRight: message.isMe ? Radius.circular(0) : Radius.circular(12.0),
+    );
+
+    final alignment =
+        message.isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start;
+
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        crossAxisAlignment: alignment,
+        children: <Widget>[
+          Text(
+            message.sender,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: message.isMe ? Colors.pink : Colors.blue,
+            ),
+          ),
+          Container(
+            decoration: BoxDecoration(
+              color: message.isMe ? Colors.pink[100] : Colors.blue[100],
+              borderRadius: borderRadius,
+            ),
+            padding: const EdgeInsets.all(12.0),
+            child: Text(message.content),
+          ),
+        ],
+      ),
+    );
   }
 }

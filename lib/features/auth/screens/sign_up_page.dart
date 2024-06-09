@@ -5,7 +5,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:remote_collab_tool/constants/utils/utils.dart';
 import 'package:remote_collab_tool/employer/setup_screen/employer_setup.dart';
+import 'package:remote_collab_tool/features/auth/screens/sign_in_page.dart';
 import 'package:remote_collab_tool/theme/pallete.dart';
 
 class SignUpPage extends StatefulWidget {
@@ -161,12 +163,17 @@ class _SignUpPageState extends State<SignUpPage> {
               Container(
                   width: double.infinity,
                   alignment: Alignment.centerRight,
-                  child: Text("Already a member? Sign in",
-                      style: GoogleFonts.aldrich(
-                        fontSize: 16.0,
-                        fontWeight: FontWeight.w300,
-                        color: Color.fromARGB(255, 14, 0, 66),
-                      ))),
+                  child: InkWell(
+                    onTap: () {
+                      moveScreen(context: context, widget: SignInPage());
+                    },
+                    child: Text("Already a member? Sign in",
+                        style: GoogleFonts.aldrich(
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.w300,
+                          color: Color.fromARGB(255, 14, 0, 66),
+                        )),
+                  )),
               SizedBox(height: 20.0),
               GestureDetector(
                 onTap: () async {
@@ -174,30 +181,29 @@ class _SignUpPageState extends State<SignUpPage> {
                   if (_selectedRole == "Employer") {
                     if (_passwordController.text ==
                         _confirmPasswordController.text) {
-                        try{
+                      try {
+                        UserCredential value = await FirebaseAuth.instance
+                            .createUserWithEmailAndPassword(
+                                email: _emailController.text,
+                                password: _passwordController.text);
+                        await FirebaseFirestore.instance
+                            .collection("user")
+                            .doc(value.user!.uid)
+                            .set({
+                          "userID": value.user!.uid,
+                          "userName": _nameController.text,
+                          "role": _selectedRole,
+                        });
 
-                      UserCredential value = await FirebaseAuth.instance
-                          .createUserWithEmailAndPassword(
-                              email: _emailController.text,
-                              password: _passwordController.text);
-                      await FirebaseFirestore.instance
-                          .collection("user")
-                          .doc(value.user!.uid)
-                          .set({
-                        "userID": value.user!.uid,
-                        "userName": _nameController.text,
-                        "role": _selectedRole,
-                      });
-
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (c) => EmployerSetupPage(
-                                    uid: value.user!.uid,
-                                  )));
-                        } catch (e) {
-                          print(e);
-                        }
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (c) => EmployerSetupPage(
+                                      uid: value.user!.uid,
+                                    )));
+                      } catch (e) {
+                        print(e);
+                      }
                     }
                   }
                 },

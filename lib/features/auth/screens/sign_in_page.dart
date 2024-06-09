@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:remote_collab_tool/global.dart';
+import 'package:remote_collab_tool/constants/utils/utils.dart';
 import 'package:remote_collab_tool/theme/pallete.dart';
 
 class SignInPage extends StatefulWidget {
@@ -90,12 +91,17 @@ class _SignInPageState extends State<SignInPage> {
               Container(
                   width: double.infinity,
                   alignment: Alignment.centerRight,
-                  child: Text("Already a member? Sign in",
-                      style: GoogleFonts.aldrich(
-                        fontSize: 16.0,
-                        fontWeight: FontWeight.w300,
-                        color: Color.fromARGB(255, 14, 0, 66),
-                      ))),
+                  child: InkWell(
+                    onTap: () {
+                      moveScreen(context: context, widget: SignInPage());
+                    },
+                    child: Text("Already a member? Sign in",
+                        style: GoogleFonts.aldrich(
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.w300,
+                          color: Color.fromARGB(255, 14, 0, 66),
+                        )),
+                  )),
               SizedBox(height: 20.0),
               GestureDetector(
                 onTap: () {
