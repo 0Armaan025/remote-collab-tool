@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:remote_collab_tool/features/auth/screens/sign_in_page.dart';
+import 'package:remote_collab_tool/features/auth/screens/sign_up_page.dart';
 import 'package:remote_collab_tool/features/home/home_page.dart';
 import 'package:remote_collab_tool/features/onboarding_screens/onboarding_screen.dart';
 import 'package:remote_collab_tool/features/splash_screen/splash_screen.dart';
@@ -19,7 +21,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: SplashScreen(),
+      home: SignUpPage(),
     );
   }
 }
