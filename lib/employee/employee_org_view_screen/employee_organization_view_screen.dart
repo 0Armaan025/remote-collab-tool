@@ -126,9 +126,12 @@ class _TasksScreenState extends State<TasksScreen> {
           _buildTaskItem('Task 3', 2),
           // Section: Groupmates' Tasks
           _buildSectionHeader('Groupmates\' Tasks'),
-          _buildGroupmateTaskItem('Task A', Icons.close, 'John', '24h'),
-          _buildGroupmateTaskItem('Task B', Icons.check, 'Emma', '12h'),
-          _buildGroupmateTaskItem('Task C', Icons.close, 'Mike', '48h'),
+          _buildGroupmateTaskItem(
+              'Think of a hackathon', Icons.close, 'Sanjay', '24h'),
+          _buildGroupmateTaskItem(
+              'Plan a meeting', Icons.check, 'Varun', '12h'),
+          _buildGroupmateTaskItem(
+              'Research on Idea', Icons.close, 'MrFeast', '48h'),
           const SizedBox(height: 40),
           Center(
             child: InkWell(
@@ -257,11 +260,17 @@ class MembersScreen extends StatelessWidget {
         padding: EdgeInsets.symmetric(horizontal: 20),
         children: [
           _buildSectionHeader('Leader'),
-          _buildLeaderTile('John Doe', 'assets/profile_pic.jpg'),
+          _buildLeaderTile('Fire Squad',
+              'https://media.discordapp.net/attachments/1248667871954079917/1249434675932434462/image.png?ex=66674a38&is=6665f8b8&hm=cb9ec2fce2c5ffbeae3d78ff6ecb7c7918a86273894f145900795e739108c1f2&=&format=webp&quality=lossless&width=477&height=453'),
           _buildSectionHeader('Members'),
-          _buildMemberTile('Member 1', 'assets/profile_pic.jpg'),
-          _buildMemberTile('Member 2', 'assets/profile_pic.jpg'),
-          _buildMemberTile('Member 3', 'assets/profile_pic.jpg'),
+          _buildMemberTile('Armaan',
+              'https://cdn-icons-png.flaticon.com/128/3135/3135715.png'),
+          _buildMemberTile('Varun',
+              'https://cdn-icons-png.flaticon.com/128/3135/3135715.png'),
+          _buildMemberTile('MrFeast',
+              'https://cdn-icons-png.flaticon.com/128/3135/3135715.png'),
+          _buildMemberTile('Sanjay',
+              'https://cdn-icons-png.flaticon.com/128/3135/3135715.png'),
           // Add more member tiles as needed
         ],
       ),
@@ -286,7 +295,7 @@ class MembersScreen extends StatelessWidget {
       title: Row(
         children: [
           CircleAvatar(
-            backgroundImage: AssetImage(profileImage),
+            backgroundImage: NetworkImage(profileImage),
           ),
           SizedBox(width: 10),
           Text(
@@ -303,7 +312,7 @@ class MembersScreen extends StatelessWidget {
       title: Row(
         children: [
           CircleAvatar(
-            backgroundImage: AssetImage(profileImage),
+            backgroundImage: NetworkImage(profileImage),
           ),
           SizedBox(width: 10),
           Text(

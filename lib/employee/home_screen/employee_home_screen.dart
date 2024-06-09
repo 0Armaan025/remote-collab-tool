@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -139,60 +140,34 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
                         ),
                       ),
                       const SizedBox(height: 10),
-                      ListView.builder(
-                        shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
-                        itemCount: _taskCompletion.length,
-                        itemBuilder: (context, index) {
-                          return Container(
-                            margin: const EdgeInsets.symmetric(vertical: 8.0),
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 16.0, vertical: 10.0),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(12.0),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black12,
-                                  blurRadius: 10,
-                                  offset: Offset(0, 5),
-                                ),
-                              ],
-                            ),
-                            child: Row(
-                              children: [
-                                CircleAvatar(
-                                  backgroundColor: Colors.black45,
-                                  child: Text(
-                                    '${index + 1}',
-                                    style: GoogleFonts.poppins(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                      StreamBuilder(
+                        stream: orgID != null
+                            ? FirebaseFirestore.instance
+                                .collection("organization")
+                                .doc(orgID)
+                                .collection(
+                                    FirebaseAuth.instance.currentUser?.uid ??
+                                        '')
+                                .snapshots()
+                            : null, // Return null if orgID is null or empty
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            return ListView.builder(
+                              itemBuilder: (context, index) {
+                                Map<String, dynamic> task =
+                                    snapshot.data!.docs[index].data();
+                                return ListTile(
+                                  title: Text(
+                                    task["task"],
+                                    style: TextStyle(fontSize: 20),
                                   ),
-                                ),
-                                const SizedBox(width: 16),
-                                Expanded(
-                                  child: Text(
-                                    'Task ${index + 1}',
-                                    style: GoogleFonts.poppins(
-                                      color: Pallete.headlineTextColor,
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                ),
-                                Checkbox(
-                                  value: _taskCompletion[index],
-                                  activeColor: Colors.black,
-                                  onChanged: (bool? value) {
-                                    setState(() {
-                                      _taskCompletion[index] = value!;
-                                    });
-                                  },
-                                ),
-                              ],
-                            ),
-                          );
+                                );
+                              },
+                              itemCount: snapshot.data!.docs.length,
+                            );
+                          } else {
+                            return Container(); // Return an empty container if snapshot has no data
+                          }
                         },
                       ),
                       const SizedBox(height: 20),

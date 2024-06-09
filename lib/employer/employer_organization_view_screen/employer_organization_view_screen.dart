@@ -124,9 +124,14 @@ class _TasksScreenState extends State<TasksScreen> {
           // Section: My Tasks
 
           _buildSectionHeader(' Tasks'),
-          _buildGroupmateTaskItem('Task A', Icons.close, 'John', '24h'),
-          _buildGroupmateTaskItem('Task B', Icons.check, 'Emma', '12h'),
-          _buildGroupmateTaskItem('Task C', Icons.close, 'Mike', '48h'),
+          _buildGroupmateTaskItem(
+              'Host a hackathon', Icons.close, 'Armaan', '24h'),
+          _buildGroupmateTaskItem(
+              'Search for sponsors', Icons.check, 'Varun', '12h'),
+          _buildGroupmateTaskItem(
+              'Contact them', Icons.close, 'MrFeast', '48h'),
+          _buildGroupmateTaskItem(
+              'Make google form', Icons.close, 'Sanjay', '48h'),
           const SizedBox(height: 40),
           Center(
             child: InkWell(
