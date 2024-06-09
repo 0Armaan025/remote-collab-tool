@@ -111,6 +111,8 @@ class TasksScreen extends StatefulWidget {
 
 class _TasksScreenState extends State<TasksScreen> {
   List<bool> _taskCompletion = [false, false, false];
+    
+  
 
   @override
   Widget build(BuildContext context) {
