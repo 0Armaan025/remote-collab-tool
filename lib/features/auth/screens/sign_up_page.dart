@@ -163,6 +163,15 @@ class _SignUpPageState extends State<SignUpPage> {
                 width: double.infinity,
                 alignment: Alignment.centerRight,
                 child: InkWell(
+                    onTap: () {
+                      moveScreen(context: context, widget: SignInPage());
+                    },
+                    child: Text("Already a member? Sign in",
+                        style: GoogleFonts.aldrich(
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.w300,
+                          color: Color.fromARGB(255, 14, 0, 66),
+                        ))),
                   onTap: () {
                     moveScreen(context: context, widget: SignInPage());
                   },
@@ -181,6 +190,31 @@ class _SignUpPageState extends State<SignUpPage> {
                 onTap: () async {
                   if (_passwordController.text !=
                       _confirmPasswordController.text) {
+                    if (_selectedRole == "Employer") {
+                      try {
+                        UserCredential value = await FirebaseAuth.instance
+                            .createUserWithEmailAndPassword(
+                                email: _emailController.text,
+                                password: _passwordController.text);
+
+                        await FirebaseFirestore.instance
+                            .collection("user")
+                            .doc(value.user!.uid)
+                            .set({
+                          "userID": value.user!.uid,
+                          "userName": _nameController.text,
+                          "role": _selectedRole,
+                        });
+
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (c) => EmployerSetupPage(
+                                      uid: value.user!.uid,
+                                    )));
+                      } catch (e) {
+                        print(e);
+                      }
                     print("Passwords do not match");
                     return;
                   }
@@ -223,6 +257,15 @@ class _SignUpPageState extends State<SignUpPage> {
                         "organizationID": "",
                       });
 
+                        sharedPreferences!.setString("role", "Employee");
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (c) => EmployeeHomeScreen()));
+                      } catch (e) {
+                        print(e);
+                      }
+
                       sharedPreferences!.setString("uid", value.user!.uid);
                       sharedPreferences!.setString("orgID", "");
                       sharedPreferences!.setString("role", "Employee");
@@ -233,6 +276,7 @@ class _SignUpPageState extends State<SignUpPage> {
                           builder: (c) => EmployeeHomeScreen(),
                         ),
                       );
+
                     }
                   } catch (e) {
                     print(e);

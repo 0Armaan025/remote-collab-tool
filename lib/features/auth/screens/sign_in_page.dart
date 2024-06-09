@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:remote_collab_tool/employee/home_screen/employee_home_screen.dart';
+import 'package:remote_collab_tool/employer/home_screen/employer_home_screen.dart';
 import 'package:remote_collab_tool/global.dart';
 import 'package:remote_collab_tool/constants/utils/utils.dart';
 import 'package:remote_collab_tool/theme/pallete.dart';
@@ -107,33 +108,35 @@ class _SignInPageState extends State<SignInPage> {
               GestureDetector(
                 onTap: () async {
                   try {
-                    FirebaseAuth.instance
+                    UserCredential auth = await FirebaseAuth.instance
                         .signInWithEmailAndPassword(
                             email: _emailController.text,
-                            password: _passwordController.text)
-                        .then((auth) {
-                      FirebaseFirestore.instance
-                          .collection("user")
-                          .doc(auth.user!.uid)
-                          .get()
-                          .then((value) {
-                        Map<String, dynamic> data = value.data()!;
-                        if (data["role"] == "Employer") {
-                          sharedPreferences!.setString("uid", auth.user!.uid);
-                          sharedPreferences!
-                              .setString("orgId", data["orgainizationID"]);
-                        } else {
-                          sharedPreferences!.setString("uid", auth.user!.uid);
-                          sharedPreferences!
-                              .setString("orgID", data["orgainizationID"]);
+                            password: _passwordController.text);
+                    FirebaseFirestore.instance
+                        .collection("user")
+                        .doc(auth.user!.uid)
+                        .get()
+                        .then((value) {
+                      Map<String, dynamic> data = value.data()!;
+                      if (data["role"] == "Employer") {
+                        sharedPreferences!.setString("uid", auth.user!.uid);
+                        sharedPreferences!
+                            .setString("orgID", data["orgainizationID"]);
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (c) => EmployerHomeScreen()));
+                      } else {
+                        sharedPreferences!.setString("uid", auth.user!.uid);
+                        sharedPreferences!
+                            .setString("orgID", data["orgainizationID"]);
 
-                          sharedPreferences!.setString("role", "Employee");
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (c) => EmployeeHomeScreen()));
-                        }
-                      });
+                        sharedPreferences!.setString("role", "Employee");
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (c) => EmployeeHomeScreen()));
+                      }
                     });
                   } catch (e) {
                     print(e);
