@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:remote_collab_tool/constants/utils/utils.dart';
+import 'package:remote_collab_tool/features/auth/screens/sign_in_page.dart';
 import 'package:remote_collab_tool/theme/pallete.dart';
 
 class SignUpPage extends StatefulWidget {
@@ -121,7 +123,6 @@ class _SignUpPageState extends State<SignUpPage> {
                   labelText: 'Confirm Password',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(20.0),
-                    
                   ),
                   filled: true,
                   fillColor: Colors.pink[50],
@@ -156,12 +157,17 @@ class _SignUpPageState extends State<SignUpPage> {
               Container(
                   width: double.infinity,
                   alignment: Alignment.centerRight,
-                  child: Text("Already a member? Sign in",
-                      style: GoogleFonts.aldrich(
-                        fontSize: 16.0,
-                        fontWeight: FontWeight.w300,
-                        color: Color.fromARGB(255, 14, 0, 66),
-                      ))),
+                  child: InkWell(
+                    onTap: () {
+                      moveScreen(context: context, widget: SignInPage());
+                    },
+                    child: Text("Already a member? Sign in",
+                        style: GoogleFonts.aldrich(
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.w300,
+                          color: Color.fromARGB(255, 14, 0, 66),
+                        )),
+                  )),
               SizedBox(height: 20.0),
               GestureDetector(
                 onTap: () {

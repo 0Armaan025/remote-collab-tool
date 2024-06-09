@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_onboarding_slider/background_final_button.dart';
 import 'package:flutter_onboarding_slider/flutter_onboarding_slider.dart';
+import 'package:remote_collab_tool/constants/utils/utils.dart';
+import 'package:remote_collab_tool/features/auth/screens/sign_in_page.dart';
+import 'package:remote_collab_tool/features/auth/screens/sign_up_page.dart';
 
 import '../../theme/pallete.dart';
 
@@ -17,7 +20,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     final size = MediaQuery.of(context).size;
     return OnBoardingSlider(
       finishButtonText: 'Register',
-      onFinish: () {},
+      onFinish: () {
+        moveScreen(context: context, widget: SignUpPage());
+      },
       finishButtonStyle: FinishButtonStyle(
         backgroundColor: Pallete.buttonColor,
       ),
@@ -37,7 +42,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           fontWeight: FontWeight.w600,
         ),
       ),
-      trailingFunction: () {},
+      trailingFunction: () {
+        moveScreen(context: context, widget: SignInPage());
+      },
       controllerColor: Pallete.headlineTextColor,
       totalPage: 3,
       headerBackgroundColor: Colors.white,

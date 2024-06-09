@@ -4,6 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:remote_collab_tool/common/appbar/appbar.dart';
 import 'package:remote_collab_tool/common/navbar/navbar.dart';
+import 'package:remote_collab_tool/constants/utils/utils.dart';
+import 'package:remote_collab_tool/features/poll_screen/poll_list_screen.dart';
+import 'package:remote_collab_tool/features/pomodoro_timer/pomodoro_timer_screen.dart';
+import 'package:remote_collab_tool/features/share_files/share_files_screen.dart';
 import 'package:remote_collab_tool/theme/pallete.dart';
 
 class EmployeeOrganizationViewScreen extends StatefulWidget {
@@ -128,19 +132,24 @@ class _TasksScreenState extends State<TasksScreen> {
           _buildGroupmateTaskItem('Task C', Icons.close, 'Mike', '48h'),
           const SizedBox(height: 40),
           Center(
-            child: Container(
-              width: double.infinity,
-              height: size.height * 0.05,
-              margin: const EdgeInsets.symmetric(horizontal: 50),
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: Pallete.buttonColor,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Text(
-                "Share files 📁",
-                style: GoogleFonts.roboto(
-                  color: Colors.white,
+            child: InkWell(
+              onTap: () {
+                moveScreen(context: context, widget: ShareFilesScreen());
+              },
+              child: Container(
+                width: double.infinity,
+                height: size.height * 0.05,
+                margin: const EdgeInsets.symmetric(horizontal: 50),
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: Pallete.buttonColor,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  "Share files 📁",
+                  style: GoogleFonts.roboto(
+                    color: Colors.white,
+                  ),
                 ),
               ),
             ),
@@ -164,27 +173,32 @@ class _TasksScreenState extends State<TasksScreen> {
   }
 
   Widget _buildTaskItem(String taskName, int index) {
-    return ListTile(
-      title: Text(
-        taskName,
-        style: GoogleFonts.poppins(),
-      ),
-      trailing: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Checkbox(
-            value:
-                _taskCompletion[index], // Change this to manage task completion
-            onChanged: (value) {
-              setState(() {
-                _taskCompletion[index] = value!;
-              });
-            },
-          ),
-          SizedBox(width: 10),
-          // Timer Widget (You can replace this with your timer implementation)
-          _buildTimer('12h'),
-        ],
+    return InkWell(
+      onTap: () {
+        moveScreen(context: context, widget: PomodoroTimer());
+      },
+      child: ListTile(
+        title: Text(
+          taskName,
+          style: GoogleFonts.poppins(),
+        ),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Checkbox(
+              value: _taskCompletion[
+                  index], // Change this to manage task completion
+              onChanged: (value) {
+                setState(() {
+                  _taskCompletion[index] = value!;
+                });
+              },
+            ),
+            SizedBox(width: 10),
+            // Timer Widget (You can replace this with your timer implementation)
+            _buildTimer('12h'),
+          ],
+        ),
       ),
     );
   }
@@ -332,7 +346,7 @@ class _ChatScreenState extends State<ChatScreen> {
           IconButton(
             icon: Icon(Icons.poll),
             onPressed: () {
-              // Navigate to poll screen or show poll modal
+              moveScreen(context: context, widget: PollListScreen());
             },
           ),
         ],

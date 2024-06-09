@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:remote_collab_tool/constants/constants.dart';
+import 'package:remote_collab_tool/constants/utils/utils.dart';
+import 'package:remote_collab_tool/employee/employee_org_view_screen/employee_organization_view_screen.dart';
+import 'package:remote_collab_tool/employee/home_screen/employee_home_screen.dart';
+import 'package:remote_collab_tool/employee/profile_page/profile_page.dart';
+import 'package:remote_collab_tool/features/document_editing/document_editing_screen.dart';
 
 class MyBottomNavigationBar extends StatefulWidget {
   const MyBottomNavigationBar({super.key});
@@ -62,6 +67,18 @@ class MyBottomNavigationBarState extends State<MyBottomNavigationBar> {
               setState(() {
                 _selectedIndex = index;
                 selectedIndex = _selectedIndex;
+
+                if (index == 0) {
+                  moveScreen(context: context, widget: EmployeeHomeScreen());
+                } else if (index == 1) {
+                  moveScreen(
+                      context: context,
+                      widget: EmployeeOrganizationViewScreen());
+                } else if (index == 2) {
+                  moveScreen(context: context, widget: DocumentEditingScreen());
+                } else if (index == 3) {
+                  moveScreen(context: context, widget: ProfilePage());
+                }
               });
             },
           ),
