@@ -3,6 +3,7 @@ import 'package:remote_collab_tool/employee/create_and_assign_task/create_and_as
 import 'package:remote_collab_tool/employee/home_screen/employee_home_screen.dart';
 import 'package:remote_collab_tool/employer/employer_organization_view_screen/employer_organization_view_screen.dart';
 import 'package:remote_collab_tool/employer/home_screen/employer_home_screen.dart';
+import 'package:remote_collab_tool/employer/members_screen/employers_member_screen.dart';
 import 'package:remote_collab_tool/features/share_files/share_files_screen.dart';
 
 import 'package:remote_collab_tool/features/splash_screen/splash_screen.dart';
@@ -30,7 +31,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: ShareFilesScreen(),
+      home: EmployerMembersScreen(),
     );
   }
 }
