@@ -40,8 +40,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home:
-          EmployerSetupPage(uid: FirebaseAuth.instance.currentUser?.uid ?? ''),
+      home: EmployeeHomeScreen(),
     );
   }
 }

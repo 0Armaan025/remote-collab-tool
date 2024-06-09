@@ -118,7 +118,7 @@ class FileHistoryScreen extends StatelessWidget {
         title: Text("File History", style: GoogleFonts.montserrat()),
       ),
       body: ListTile(
-        leading: CircleAvatar(child: Text("User")),
+        leading: CircleAvatar(),
         title: Text("new.png"),
         subtitle: Text("File Type: PNG"),
         trailing: IconButton(

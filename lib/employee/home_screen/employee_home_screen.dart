@@ -106,7 +106,7 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
               const SizedBox(height: 20),
               Center(
                 child: Text(
-                  "",
+                  "FireSquad",
                   style: GoogleFonts.pacifico(
                     color: Pallete.headlineTextColor,
                     fontSize: 28,

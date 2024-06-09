@@ -135,7 +135,7 @@ class _PomodoroTimerState extends State<PomodoroTimer>
                   height: 10,
                 ),
                 Center(
-                  child: Text("task name here",
+                  child: Text("Learn about HackJPS",
                       style: TextStyle(
                         fontSize: 25.0,
                         fontWeight: FontWeight.w500,
