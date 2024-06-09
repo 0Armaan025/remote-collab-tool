@@ -15,7 +15,7 @@ class EmployeeProfile extends StatefulWidget {
 
 class _EmployeeProfileState extends State<EmployeeProfile> {
   TextEditingController taskController = TextEditingController();
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,19 +50,30 @@ class _EmployeeProfileState extends State<EmployeeProfile> {
               "Tasks List -",
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
             ),
-            StreamBuilder(stream: FirebaseFirestore.instance.collection("organization").doc(widget.orgID).collection(widget.user.uid).snapshots(), builder: (context, snapshot) {
-              snapshot.hasData ? 
-                  ListView.builder(itemBuilder: (context, index){
-                    Map<String,dynamic> task = snapshot.data!.docs[index].data();
-                    return ListTile(
-      title: Text(
-        task["task"],
-        style: TextStyle(fontSize: 20),
-      ),
-    );
-                  },itemCount: snapshot.data!.docs.length,)
-               : Container();
-            },),
+            StreamBuilder(
+              stream: FirebaseFirestore.instance
+                  .collection("organization")
+                  .doc(widget.orgID)
+                  .collection(widget.user.uid)
+                  .snapshots(),
+              builder: (context, snapshot) {
+                return snapshot.hasData
+                    ? ListView.builder(
+                        itemBuilder: (context, index) {
+                          Map<String, dynamic> task =
+                              snapshot.data!.docs[index].data();
+                          return ListTile(
+                            title: Text(
+                              task["task"],
+                              style: TextStyle(fontSize: 20),
+                            ),
+                          );
+                        },
+                        itemCount: snapshot.data!.docs.length,
+                      )
+                    : Container();
+              },
+            ),
             ElevatedButton(
               onPressed: () {
                 showDialog(

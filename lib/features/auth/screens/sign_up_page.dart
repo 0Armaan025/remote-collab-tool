@@ -163,28 +163,20 @@ class _SignUpPageState extends State<SignUpPage> {
                 },
               ),
               SizedBox(height: 15.0),
-
-  
-
               Container(
-                  width: double.infinity,
-                  alignment: Alignment.centerRight,
-                  child: InkWell(
+                width: double.infinity,
+                alignment: Alignment.centerRight,
+                child: InkWell(
                     onTap: () {
                       moveScreen(context: context, widget: SignInPage());
                     },
-
                     child: Text("Already a member? Sign in",
                         style: GoogleFonts.aldrich(
                           fontSize: 16.0,
                           fontWeight: FontWeight.w300,
                           color: Color.fromARGB(255, 14, 0, 66),
-
                         ))),
               ),
-
-                        
-
               SizedBox(height: 20.0),
               GestureDetector(
                 onTap: () async {
@@ -193,18 +185,11 @@ class _SignUpPageState extends State<SignUpPage> {
                   if (_passwordController.text ==
                       _confirmPasswordController.text) {
                     if (_selectedRole == "Employer") {
-
-                  if (_selectedRole == "Employer") {
-                    if (_passwordController.text ==
-                        _confirmPasswordController.text) {
-
                       try {
                         UserCredential value = await FirebaseAuth.instance
                             .createUserWithEmailAndPassword(
                                 email: _emailController.text,
                                 password: _passwordController.text);
-
-
 
                         await FirebaseFirestore.instance
                             .collection("user")
@@ -224,7 +209,6 @@ class _SignUpPageState extends State<SignUpPage> {
                       } catch (e) {
                         print(e);
                       }
-
                     } else {
                       try {
                         UserCredential value = await FirebaseAuth.instance
@@ -254,7 +238,6 @@ class _SignUpPageState extends State<SignUpPage> {
                       } catch (e) {
                         print(e);
                       }
-
                     }
                   }
                 },

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+
 import 'package:remote_collab_tool/theme/pallete.dart';
 
 class CreateAndAssignTaskPage extends StatefulWidget {
@@ -74,11 +75,6 @@ class _CreateAndAssignTaskPageState extends State<CreateAndAssignTaskPage> {
       time.hour,
       time.minute,
     );
-
-    print('Task: $taskName');
-    print('Assignee: $assignee');
-    print(
-        'Deadline: ${DateFormat('yyyy-MM-dd – kk:mm').format(deadlineWithTime)}');
 
     _taskNameController.clear();
     setState(() {
