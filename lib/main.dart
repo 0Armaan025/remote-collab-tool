@@ -1,7 +1,5 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:remote_collab_tool/employee/company_join_in/employee_company_join_in_screen.dart';
-import 'package:remote_collab_tool/employee/employee_org_view_screen/employee_organization_view_screen.dart';
-import 'package:remote_collab_tool/employee/home_screen/employee_home_screen.dart';
 import 'package:remote_collab_tool/features/auth/screens/sign_in_page.dart';
 import 'package:remote_collab_tool/features/auth/screens/sign_up_page.dart';
 import 'package:remote_collab_tool/employer/setup_screen/employer_setup.dart';
@@ -11,7 +9,11 @@ import 'package:remote_collab_tool/features/pomodoro_timer/pomodoro_timer_screen
 import 'package:remote_collab_tool/features/share_files/share_files_screen.dart';
 import 'package:remote_collab_tool/features/splash_screen/splash_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:remote_collab_tool/global.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'firebase_options.dart';
+
+
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,7 +21,6 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   runApp(const MyApp());
-}
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -33,7 +34,9 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-home:PomodoroTimer(),
+      home: FirebaseAuth.instance.currentUser != null
+          ? EmployerHomeScreen()
+          : SignUpPage(),
     );
   }
 }
