@@ -5,16 +5,20 @@ import 'package:remote_collab_tool/constants/utils/utils.dart';
 import 'package:remote_collab_tool/employee/employee_org_view_screen/employee_organization_view_screen.dart';
 import 'package:remote_collab_tool/employee/home_screen/employee_home_screen.dart';
 import 'package:remote_collab_tool/employee/profile_page/profile_page.dart';
+import 'package:remote_collab_tool/employer/employer_organization_view_screen/employer_organization_view_screen.dart';
+import 'package:remote_collab_tool/employer/home_screen/employer_home_screen.dart';
 import 'package:remote_collab_tool/features/document_editing/document_editing_screen.dart';
 
-class MyBottomNavigationBar extends StatefulWidget {
-  const MyBottomNavigationBar({super.key});
+class MyEmployerBottomNavigationBar extends StatefulWidget {
+  const MyEmployerBottomNavigationBar({super.key});
 
   @override
-  State<MyBottomNavigationBar> createState() => MyBottomNavigationBarState();
+  State<MyEmployerBottomNavigationBar> createState() =>
+      MyEmployerBottomNavigationBarState();
 }
 
-class MyBottomNavigationBarState extends State<MyBottomNavigationBar> {
+class MyEmployerBottomNavigationBarState
+    extends State<MyEmployerBottomNavigationBar> {
   int _selectedIndex = 0;
   static const TextStyle optionStyle =
       TextStyle(fontSize: 24, fontWeight: FontWeight.w600);
@@ -69,11 +73,11 @@ class MyBottomNavigationBarState extends State<MyBottomNavigationBar> {
                 selectedIndex = _selectedIndex;
 
                 if (index == 0) {
-                  moveScreen(context: context, widget: EmployeeHomeScreen());
+                  moveScreen(context: context, widget: EmployerHomeScreen());
                 } else if (index == 1) {
                   moveScreen(
                       context: context,
-                      widget: EmployeeOrganizationViewScreen());
+                      widget: EmployerOrganizationViewScreen());
                 } else if (index == 2) {
                   moveScreen(context: context, widget: DocumentEditingScreen());
                 } else if (index == 3) {

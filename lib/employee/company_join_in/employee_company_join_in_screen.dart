@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:remote_collab_tool/theme/pallete.dart';
@@ -18,6 +20,36 @@ class _EmployeeCompanyJoinInScreenState
   void dispose() {
     _companyCodeController.dispose();
     super.dispose();
+  }
+
+  Future<void> _joinCompany() async {
+    String companyCode = _companyCodeController.text.trim();
+    String userId = FirebaseAuth.instance.currentUser?.uid ?? '';
+
+    if (companyCode.isEmpty || userId.isEmpty) {
+      print("Company code or User ID is empty");
+      return;
+    }
+
+    try {
+      DocumentReference companyRef = FirebaseFirestore.instance
+          .collection('organization')
+          .doc(companyCode);
+
+      DocumentSnapshot companyDoc = await companyRef.get();
+
+      if (companyDoc.exists) {
+        List<dynamic> employees = companyDoc.get('Employees') ?? [];
+        if (!employees.contains(userId)) {
+          employees.add(userId);
+          await companyRef.update({'Employees': employees});
+        } else {}
+      } else {
+        print("Company not found");
+      }
+    } catch (e) {
+      print("Error joining company: $e");
+    }
   }
 
   @override
@@ -78,9 +110,7 @@ class _EmployeeCompanyJoinInScreenState
                       ),
                       const SizedBox(height: 30),
                       ElevatedButton(
-                        onPressed: () {
-                          // Handle company code submission
-                        },
+                        onPressed: _joinCompany,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Pallete.buttonColor,
                           shape: RoundedRectangleBorder(
