@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:remote_collab_tool/employer/home_screen/Employee_profile.dart';
 import 'package:remote_collab_tool/global.dart';
 import 'package:remote_collab_tool/models/user.dart';
+import 'dart:developer' as developer;
 
 class EmployerHomeScreen extends StatefulWidget {
   const EmployerHomeScreen({super.key});
@@ -20,12 +21,17 @@ class _EmployerHomeScreenState extends State<EmployerHomeScreen> {
   void initState() {
     uid = sharedPreferences!.getString("uid");
     orgId = sharedPreferences!.getString("orgID");
+    developer.log(orgId!);
     FirebaseFirestore.instance
         .collection("organization")
         .doc(orgId)
         .get()
         .then((value) {
-      data = value.data();
+      setState(
+        () {
+          data = value.data();
+        },
+      );
     });
     super.initState();
   }
@@ -56,43 +62,56 @@ class _EmployerHomeScreenState extends State<EmployerHomeScreen> {
                   ? Container()
                   : ListView.builder(
                       shrinkWrap: true,
-                      itemCount: data!["employees"].length,
+                      itemCount: data!["Employees"].length,
                       itemBuilder: (context, index) {
-                        String employeeId = data!["employees"][index];
-                        FirebaseFirestore.instance
-                            .collection("user")
-                            .doc(employeeId)
-                            .get()
-                            .then((value) {
-                          UserModal user = UserModal.fromMap(value.data()!);
-                          return GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (c) => EmployeeProfile(
-                                          user: user, orgID: orgId!)));
-                            },
-                            child: Row(
-                              children: [
-                                CircleAvatar(
-                                  backgroundImage:
-                                      NetworkImage(user.profilePictureUrl),
-                                  radius: 15,
-                                ),
-                                SizedBox(
-                                  width: 15,
-                                ),
-                                Text(
-                                  user.username,
-                                  style: TextStyle(
-                                    fontSize: 18,
+                        String employeeId = data!["Employees"][index];
+
+                        return FutureBuilder<DocumentSnapshot>(
+                          future: FirebaseFirestore.instance
+                              .collection("user")
+                              .doc(employeeId)
+                              .get(),
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return Center(child: CircularProgressIndicator());
+                            }
+                            if (snapshot.hasError) {
+                              return Text("Error loading data");
+                            }
+                            if (!snapshot.hasData) {
+                              return Text("No data available");
+                            }
+
+                            UserModal user = UserModal.fromMap(
+                                snapshot.data!.data() as Map<String, dynamic>);
+                            return GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (c) => EmployeeProfile(
+                                            user: user, orgID: orgId!)));
+                              },
+                              child: Row(
+                                children: [
+                                  CircleAvatar(
+                                    backgroundImage:
+                                        NetworkImage(user.profilePictureUrl),
+                                    radius: 30,
                                   ),
-                                ),
-                              ],
-                            ),
-                          );
-                        });
+                                  SizedBox(width: 15),
+                                  Text(
+                                    user.username,
+                                    style: TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.w600),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        );
                       },
                     ),
             ],
