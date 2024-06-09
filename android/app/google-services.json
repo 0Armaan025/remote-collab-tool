@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "253312907233",
+    "project_id": "fire-chat-c7e2c",
+    "storage_bucket": "fire-chat-c7e2c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:253312907233:android:1a0fbc48ee676f485904a0",
+        "android_client_info": {
+          "package_name": "com.example.remote_collab_tool"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAFFcXnNXyfEMoF0AGz22i0i--PPQ9Umgg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
