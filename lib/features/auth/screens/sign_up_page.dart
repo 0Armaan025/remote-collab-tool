@@ -6,6 +6,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:remote_collab_tool/employer/setup_screen/employer_setup.dart';
+import 'package:remote_collab_tool/global.dart';
 import 'package:remote_collab_tool/theme/pallete.dart';
 import '../../../employee/home_screen/employee_home_screen.dart';
 
@@ -216,6 +217,8 @@ class _SignUpPageState extends State<SignUpPage> {
                           "profilePictureUrl":
                               "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
                         });
+                        sharedPreferences!.setString("uid", value.user!.uid);
+                        sharedPreferences!.setString("role", "Employee");
                         Navigator.push(
                             context,
                             MaterialPageRoute(
