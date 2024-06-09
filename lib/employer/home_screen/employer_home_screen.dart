@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:remote_collab_tool/global.dart';
+import 'package:remote_collab_tool/models/user.dart';
 
 class EmployerHomeScreen extends StatefulWidget {
   const EmployerHomeScreen({super.key});
@@ -52,7 +53,41 @@ class _EmployerHomeScreenState extends State<EmployerHomeScreen> {
               ),
               data!["employees"] == null || data!["Employees"] == []
                   ? Container()
-                  : Container(),
+                  : ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: data!["employees"].length,
+                      itemBuilder: (context, index) {
+                        String employeeId = data!["employees"][index];
+                        FirebaseFirestore.instance
+                            .collection("user")
+                            .doc(employeeId)
+                            .get()
+                            .then((value) {
+                          UserModal user = UserModal.fromMap(value.data()!);
+                          return GestureDetector(
+                            onTap: () {},
+                            child: Row(
+                              children: [
+                                CircleAvatar(
+                                  backgroundImage:
+                                      NetworkImage(user.profilePictureUrl),
+                                  radius: 15,
+                                ),
+                                SizedBox(
+                                  width: 15,
+                                ),
+                                Text(
+                                  user.username,
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        });
+                      },
+                    ),
             ],
           ),
         ),
