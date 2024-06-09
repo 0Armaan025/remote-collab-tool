@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:remote_collab_tool/employer/home_screen/employer_home_screen.dart';
 import 'package:remote_collab_tool/features/auth/screens/sign_in_page.dart';
 import 'package:remote_collab_tool/features/auth/screens/sign_up_page.dart';
 import 'package:remote_collab_tool/employer/setup_screen/employer_setup.dart';
@@ -13,14 +14,13 @@ import 'package:remote_collab_tool/global.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'firebase_options.dart';
 
-
-
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
   runApp(const MyApp());
+}
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
