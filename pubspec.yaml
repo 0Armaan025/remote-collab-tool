@@ -49,6 +49,7 @@ dependencies:
   flutter_countdown_timer: ^4.1.0
   flutter_svg: ^2.0.10+1
   flutter_animate: ^4.5.0
+  another_flutter_splash_screen: ^1.2.0
 
 dev_dependencies:
   flutter_lints: ^3.0.0
