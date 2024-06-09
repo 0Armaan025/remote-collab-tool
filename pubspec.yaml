@@ -28,14 +28,13 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
-  another_flutter_splash_screen: ^1.2.0
   cloud_firestore: ^5.0.0
   cupertino_icons: ^1.0.6
   firebase_auth: ^5.0.0
   firebase_core: ^3.0.0
   flutter:
     sdk: flutter
-  
+
   google_fonts: ^6.2.1
   hexcolor: ^3.0.1
   flutter_onboarding_slider: ^1.0.11
@@ -43,7 +42,6 @@ dependencies:
   image_picker: ^1.1.2
   file_picker: ^8.0.3
   google_nav_bar: ^5.0.6
-
 
 dev_dependencies:
   flutter_lints: ^3.0.0
