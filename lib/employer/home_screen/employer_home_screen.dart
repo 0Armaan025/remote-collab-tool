@@ -1,6 +1,6 @@
-import 'dart:math';
-
+import 'dart:developer' as developer;
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
@@ -15,7 +15,7 @@ import 'package:lottie/lottie.dart';
 import 'package:remote_collab_tool/theme/pallete.dart';
 
 class EmployerHomeScreen extends StatefulWidget {
-  const EmployerHomeScreen({super.key});
+  const EmployerHomeScreen({Key? key});
 
   @override
   State<EmployerHomeScreen> createState() => _EmployerHomeScreenState();
@@ -30,14 +30,9 @@ class _EmployerHomeScreenState extends State<EmployerHomeScreen> {
 
   @override
   void initState() {
+    uid = FirebaseAuth.instance.currentUser?.uid ?? '';
+
     super.initState();
-    _confettiController =
-        ConfettiController(duration: const Duration(seconds: 10));
-    uid = sharedPreferences?.getString("uid");
-    orgId = sharedPreferences?.getString("orgID");
-    if (orgId != null) {
-      fetchOrganizationData();
-    }
   }
 
   @override
@@ -119,7 +114,7 @@ class _EmployerHomeScreenState extends State<EmployerHomeScreen> {
                 children: [
                   Center(
                     child: Text(
-                      'Company Name',
+                      'FireSquad',
                       style: GoogleFonts.pacifico(
                         color: Colors.black,
                         fontSize: 28,
@@ -162,7 +157,7 @@ class _EmployerHomeScreenState extends State<EmployerHomeScreen> {
                         ),
                       ),
                       child: Text(
-                        'Welcome to Company Name',
+                        'Welcome to FireSquad',
                         style: GoogleFonts.poppins(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,

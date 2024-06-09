@@ -1,5 +1,7 @@
 import 'package:another_flutter_splash_screen/another_flutter_splash_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:remote_collab_tool/employee/home_screen/employee_home_screen.dart';
 import 'package:remote_collab_tool/features/onboarding_screens/onboarding_screen.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -16,7 +18,9 @@ class _SplashScreenState extends State<SplashScreen> {
       gifPath: 'assets/gif/splash_gif.gif',
       gifWidth: 269,
       gifHeight: 474,
-      nextScreen: const OnboardingScreen(),
+      nextScreen: FirebaseAuth.instance.currentUser == true
+          ? EmployeeHomeScreen()
+          : OnboardingScreen(),
       duration: const Duration(milliseconds: 3515),
       onInit: () async {
         debugPrint("onInit");

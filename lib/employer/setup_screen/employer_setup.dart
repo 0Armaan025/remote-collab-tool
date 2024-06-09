@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -112,9 +113,7 @@ class _EmployerSetupPageState extends State<EmployerSetupPage> {
                         _placeController.text != "") {
                       String orgainizationID =
                           DateTime.now().millisecondsSinceEpoch.toString();
-                      sharedPreferences!.setString("uid", widget.uid);
-                      sharedPreferences!.setString("orgID", orgainizationID);
-                      sharedPreferences!.setString("role", "Employer");
+
                       FirebaseFirestore.instance
                           .collection("organization")
                           .doc(orgainizationID)
@@ -127,7 +126,7 @@ class _EmployerSetupPageState extends State<EmployerSetupPage> {
                       });
                       FirebaseFirestore.instance
                           .collection("user")
-                          .doc(widget.uid)
+                          .doc(FirebaseAuth.instance.currentUser?.uid ?? '')
                           .update({
                         "orgainizationID": orgainizationID,
                       });

@@ -121,9 +121,9 @@ class _TasksScreenState extends State<TasksScreen> {
         children: [
           // Section: My Tasks
           _buildSectionHeader('My Tasks'),
-          _buildTaskItem('Task 1', 0),
-          _buildTaskItem('Task 2', 1),
-          _buildTaskItem('Task 3', 2),
+          _buildTaskItem('Learn about HackJPS', 0),
+          _buildTaskItem('Fix some bugs', 1),
+          _buildTaskItem('Fix some more bugs', 2),
           // Section: Groupmates' Tasks
           _buildSectionHeader('Groupmates\' Tasks'),
           _buildGroupmateTaskItem(
