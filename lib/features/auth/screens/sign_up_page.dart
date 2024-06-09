@@ -1,5 +1,11 @@
+import 'dart:math';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:remote_collab_tool/employer/setup_screen/employer_setup.dart';
 import 'package:remote_collab_tool/theme/pallete.dart';
 
 class SignUpPage extends StatefulWidget {
@@ -121,7 +127,6 @@ class _SignUpPageState extends State<SignUpPage> {
                   labelText: 'Confirm Password',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(20.0),
-                    
                   ),
                   filled: true,
                   fillColor: Colors.pink[50],
@@ -164,8 +169,37 @@ class _SignUpPageState extends State<SignUpPage> {
                       ))),
               SizedBox(height: 20.0),
               GestureDetector(
-                onTap: () {
+                onTap: () async {
                   // Implement sign-up functionality
+                  if (_selectedRole == "Employer") {
+                    if (_passwordController.text ==
+                        _confirmPasswordController.text) {
+                        try{
+
+                      UserCredential value = await FirebaseAuth.instance
+                          .createUserWithEmailAndPassword(
+                              email: _emailController.text,
+                              password: _passwordController.text);
+                      await FirebaseFirestore.instance
+                          .collection("user")
+                          .doc(value.user!.uid)
+                          .set({
+                        "userID": value.user!.uid,
+                        "userName": _nameController.text,
+                        "role": _selectedRole,
+                      });
+
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (c) => EmployerSetupPage(
+                                    uid: value.user!.uid,
+                                  )));
+                        } catch (e) {
+                          print(e);
+                        }
+                    }
+                  }
                 },
                 child: Container(
                   height: 50.0,

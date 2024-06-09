@@ -1,5 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:remote_collab_tool/global.dart';
 import 'package:remote_collab_tool/theme/pallete.dart';
 
 class SignInPage extends StatefulWidget {
@@ -96,7 +99,24 @@ class _SignInPageState extends State<SignInPage> {
               SizedBox(height: 20.0),
               GestureDetector(
                 onTap: () {
-                  // Implement sign-up functionality
+                  FirebaseAuth.instance
+                      .signInWithEmailAndPassword(
+                          email: _emailController.text,
+                          password: _passwordController.text)
+                      .then((auth) {
+                    FirebaseFirestore.instance
+                        .collection("user")
+                        .doc(auth.user!.uid)
+                        .get()
+                        .then((value) {
+                      Map<String, dynamic> data = value.data()!;
+                      if (data["role"] == "Employer") {
+                        sharedPreferences!.setString("uid", auth.user!.uid);
+                        sharedPreferences!
+                            .setString("orgId", data["orgainizationID"]);
+                      }
+                    });
+                  });
                 },
                 child: Container(
                   height: 50.0,
@@ -106,7 +126,7 @@ class _SignInPageState extends State<SignInPage> {
                   ),
                   child: Center(
                     child: Text(
-                      'Sign Up',
+                      'Sign in',
                       style: GoogleFonts.cherryCreamSoda(
                         fontSize: 20.0,
                         color: Colors.white,

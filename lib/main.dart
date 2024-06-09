@@ -1,4 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:remote_collab_tool/employer/home_screen/employer_home_screen.dart';
 import 'package:remote_collab_tool/features/auth/screens/sign_in_page.dart';
 import 'package:remote_collab_tool/features/auth/screens/sign_up_page.dart';
 import 'package:remote_collab_tool/employer/setup_screen/employer_setup.dart';
@@ -6,11 +8,15 @@ import 'package:remote_collab_tool/features/home/home_page.dart';
 import 'package:remote_collab_tool/features/onboarding_screens/onboarding_screen.dart';
 import 'package:remote_collab_tool/features/splash_screen/splash_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:remote_collab_tool/global.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'firebase_options.dart';
 
 // ...
 
-Future<void> main() async {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  sharedPreferences = await SharedPreferences.getInstance();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -29,7 +35,9 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: (),
+      home: FirebaseAuth.instance.currentUser != null
+          ? EmployerHomeScreen()
+          : SignUpPage(),
     );
   }
 }
