@@ -123,6 +123,7 @@ class _EmployerSetupPageState extends State<EmployerSetupPage> {
                         "name": _nameController.text,
                         "email": _nameController.text,
                         "place": _placeController.text,
+                        "Employees": [],
                       });
                       FirebaseFirestore.instance
                           .collection("user")

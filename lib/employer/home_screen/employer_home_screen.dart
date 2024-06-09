@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:remote_collab_tool/employer/home_screen/Employee_profile.dart';
 import 'package:remote_collab_tool/global.dart';
 import 'package:remote_collab_tool/models/user.dart';
 
@@ -51,7 +52,7 @@ class _EmployerHomeScreenState extends State<EmployerHomeScreen> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              data!["employees"] == null || data!["Employees"] == []
+              data!["Employees"] == null || data!["Employees"] == []
                   ? Container()
                   : ListView.builder(
                       shrinkWrap: true,
@@ -65,7 +66,13 @@ class _EmployerHomeScreenState extends State<EmployerHomeScreen> {
                             .then((value) {
                           UserModal user = UserModal.fromMap(value.data()!);
                           return GestureDetector(
-                            onTap: () {},
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (c) => EmployeeProfile(
+                                          user: user, orgID: orgId!)));
+                            },
                             child: Row(
                               children: [
                                 CircleAvatar(
