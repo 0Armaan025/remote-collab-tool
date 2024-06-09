@@ -29,13 +29,13 @@ class ProfilePage extends StatelessWidget {
                 CircleAvatar(
                   radius: 60.0,
                   backgroundImage: NetworkImage(
-                      'https://wafflehacks.org/assets/images/team/nisarg.webp'),
+                      'https://media.discordapp.net/attachments/1248667871954079917/1249434675932434462/image.png?ex=66674a38&is=6665f8b8&hm=cb9ec2fce2c5ffbeae3d78ff6ecb7c7918a86273894f145900795e739108c1f2&=&format=webp&quality=lossless&width=477&height=453'),
                   backgroundColor: Colors.white.withOpacity(0.4),
                 ),
                 SizedBox(height: 20.0),
                 // User Name
                 Text(
-                  'Nisarg',
+                  'FireSquad',
                   style: GoogleFonts.pacifico(
                     fontSize: 28.0,
                     fontWeight: FontWeight.bold,
@@ -45,7 +45,7 @@ class ProfilePage extends StatelessWidget {
                 SizedBox(height: 10.0),
                 // User Email
                 Text(
-                  'nisarg.user@example.com',
+                  'firesquad@hackjps.com',
                   style: GoogleFonts.poppins(
                     fontSize: 18.0,
                     color: Colors.pinkAccent,
@@ -54,7 +54,7 @@ class ProfilePage extends StatelessWidget {
                 SizedBox(height: 10.0),
                 // Company Name
                 Text(
-                  'Works at: Company name',
+                  'Works at: Google',
                   style: GoogleFonts.poppins(
                     fontSize: 18.0,
                     color: Colors.pinkAccent,
