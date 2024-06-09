@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
@@ -15,14 +16,41 @@ class _CreateAndAssignTaskPageState extends State<CreateAndAssignTaskPage> {
   String? _selectedAssignee;
   DateTime? _selectedDeadline;
   TimeOfDay? _selectedTime;
+  List<String> _assignees = [];
+  List<String> _assigneeUIDs = [];
 
-  final List<String> _assignees = [
-    'Alice',
-    'Bob',
-    'Charlie',
-    'David',
-    'Eve',
-  ];
+  @override
+  void initState() {
+    super.initState();
+    _fetchAssignees();
+  }
+
+  Future<void> _fetchAssignees() async {
+    try {
+      // Fetch the organization document
+      DocumentSnapshot orgDoc = await FirebaseFirestore.instance
+          .collection('organization')
+          .limit(1)
+          .get()
+          .then((snapshot) => snapshot.docs.first);
+
+      List<dynamic> employeeUIDs = orgDoc.get('Employees');
+
+      List<String> assignees = [];
+      for (var uid in employeeUIDs) {
+        DocumentSnapshot userDoc =
+            await FirebaseFirestore.instance.collection('user').doc(uid).get();
+        assignees.add(userDoc.get('userName'));
+      }
+
+      setState(() {
+        _assignees = assignees;
+        _assigneeUIDs = List<String>.from(employeeUIDs);
+      });
+    } catch (e) {
+      print('Error fetching assignees: $e');
+    }
+  }
 
   void _pickDeadline() async {
     final DateTime? pickedDate = await showDatePicker(

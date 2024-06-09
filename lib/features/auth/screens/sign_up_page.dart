@@ -1,10 +1,6 @@
-import 'dart:math';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:remote_collab_tool/constants/utils/utils.dart';
 import 'package:remote_collab_tool/employer/setup_screen/employer_setup.dart';
@@ -49,27 +45,27 @@ class _SignUpPageState extends State<SignUpPage> {
             children: [
               const SizedBox(height: 10),
               Center(
-                child: Text("Sign Up",
-                    style: GoogleFonts.poppins(
-                      fontSize: 30.0,
-                      fontWeight: FontWeight.w500,
-                      color: const Color.fromARGB(255, 17, 0, 6),
-                    )),
+                child: Text(
+                  "Sign Up",
+                  style: GoogleFonts.poppins(
+                    fontSize: 30.0,
+                    fontWeight: FontWeight.w500,
+                    color: const Color.fromARGB(255, 17, 0, 6),
+                  ),
+                ),
               ),
-              const SizedBox(
-                height: 4,
-              ),
+              const SizedBox(height: 4),
               Center(
-                child: Text("Happy to see new users! :D",
-                    style: GoogleFonts.aldrich(
-                      fontSize: 18.0,
-                      fontWeight: FontWeight.w300,
-                      color: const Color.fromARGB(255, 17, 0, 6),
-                    )),
+                child: Text(
+                  "Happy to see new users! :D",
+                  style: GoogleFonts.aldrich(
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.w300,
+                    color: const Color.fromARGB(255, 17, 0, 6),
+                  ),
+                ),
               ),
-              const SizedBox(
-                height: 4,
-              ),
+              const SizedBox(height: 4),
               GestureDetector(
                 onTap: () {
                   // Implement profile picture selection functionality
@@ -176,13 +172,23 @@ class _SignUpPageState extends State<SignUpPage> {
                           fontWeight: FontWeight.w300,
                           color: Color.fromARGB(255, 14, 0, 66),
                         ))),
+                  onTap: () {
+                    moveScreen(context: context, widget: SignInPage());
+                  },
+                  child: Text(
+                    "Already a member? Sign in",
+                    style: GoogleFonts.aldrich(
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.w300,
+                      color: Color.fromARGB(255, 14, 0, 66),
+                    ),
+                  ),
+                ),
               ),
               SizedBox(height: 20.0),
               GestureDetector(
                 onTap: () async {
-                  // Implement sign-up functionality
-
-                  if (_passwordController.text ==
+                  if (_passwordController.text !=
                       _confirmPasswordController.text) {
                     if (_selectedRole == "Employer") {
                       try {
@@ -209,26 +215,47 @@ class _SignUpPageState extends State<SignUpPage> {
                       } catch (e) {
                         print(e);
                       }
+                    print("Passwords do not match");
+                    return;
+                  }
+
+                  try {
+                    UserCredential value = await FirebaseAuth.instance
+                        .createUserWithEmailAndPassword(
+                            email: _emailController.text,
+                            password: _passwordController.text);
+
+                    if (_selectedRole == "Employer") {
+                      await FirebaseFirestore.instance
+                          .collection("user")
+                          .doc(value.user!.uid)
+                          .set({
+                        "userID": value.user!.uid,
+                        "userName": _nameController.text,
+                        "role": _selectedRole,
+                      });
+
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (c) => EmployerSetupPage(
+                            uid: value.user!.uid,
+                          ),
+                        ),
+                      );
                     } else {
-                      try {
-                        UserCredential value = await FirebaseAuth.instance
-                            .createUserWithEmailAndPassword(
-                                email: _emailController.text,
-                                password: _passwordController.text);
-                        await FirebaseFirestore.instance
-                            .collection("user")
-                            .doc(value.user!.uid)
-                            .set({
-                          "uid": value.user!.uid,
-                          "username": _nameController.text,
-                          "role": _selectedRole,
-                          "email": _emailController.text,
-                          "profilePictureUrl":
-                              "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
-                          "organizationID": "",
-                        });
-                        sharedPreferences!.setString("uid", value.user!.uid);
-                        sharedPreferences!.setString("orgID", "");
+                      await FirebaseFirestore.instance
+                          .collection("user")
+                          .doc(value.user!.uid)
+                          .set({
+                        "uid": value.user!.uid,
+                        "username": _nameController.text,
+                        "role": _selectedRole,
+                        "email": _emailController.text,
+                        "profilePictureUrl":
+                            "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
+                        "organizationID": "",
+                      });
 
                         sharedPreferences!.setString("role", "Employee");
                         Navigator.push(
@@ -238,7 +265,21 @@ class _SignUpPageState extends State<SignUpPage> {
                       } catch (e) {
                         print(e);
                       }
+
+                      sharedPreferences!.setString("uid", value.user!.uid);
+                      sharedPreferences!.setString("orgID", "");
+                      sharedPreferences!.setString("role", "Employee");
+
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (c) => EmployeeHomeScreen(),
+                        ),
+                      );
+
                     }
+                  } catch (e) {
+                    print(e);
                   }
                 },
                 child: Container(

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:remote_collab_tool/common/navbar/navbar.dart';
+import 'package:remote_collab_tool/constants/utils/utils.dart';
+import 'package:remote_collab_tool/employer/home_screen/employer_home_screen.dart';
 import 'package:remote_collab_tool/theme/pallete.dart';
 
 class EmployerMembersScreen extends StatefulWidget {
@@ -10,9 +12,10 @@ class EmployerMembersScreen extends StatefulWidget {
 
 class _EmployerMembersScreenState extends State<EmployerMembersScreen> {
   final Map<String, String> _memberRoles = {
-    'Member 1': 'Member',
-    'Member 2': 'Member',
-    'Member 3': 'Member',
+    'Varun': 'Admin',
+    'Armaan': 'Member',
+    'Sanjay': 'Member',
+    'MrFeast': 'Member',
   };
 
   @override
@@ -20,7 +23,6 @@ class _EmployerMembersScreenState extends State<EmployerMembersScreen> {
     final size = MediaQuery.of(context).size;
 
     return Scaffold(
-      bottomNavigationBar: MyBottomNavigationBar(),
       backgroundColor: Pallete.bgColor,
       appBar: AppBar(
         title: Text('RCT', style: GoogleFonts.poppins(fontSize: 20)),
@@ -37,7 +39,8 @@ class _EmployerMembersScreenState extends State<EmployerMembersScreen> {
           padding: EdgeInsets.symmetric(horizontal: 20),
           children: [
             _buildSectionHeader('Leader'),
-            _buildLeaderTile('John Doe', 'assets/profile_pic.jpg'),
+            _buildLeaderTile('FireSquad',
+                'https://media.discordapp.net/attachments/1248667871954079917/1249434675932434462/image.png?ex=66674a38&is=6665f8b8&hm=cb9ec2fce2c5ffbeae3d78ff6ecb7c7918a86273894f145900795e739108c1f2&=&format=webp&quality=lossless&width=477&height=453'),
             _buildSectionHeader('Members'),
             ..._buildMemberTiles(),
             // Add more member tiles as needed
@@ -66,7 +69,7 @@ class _EmployerMembersScreenState extends State<EmployerMembersScreen> {
       contentPadding: EdgeInsets.symmetric(vertical: 5),
       leading: CircleAvatar(
         radius: 25,
-        backgroundImage: AssetImage(profileImage),
+        backgroundImage: NetworkImage(profileImage),
       ),
       title: Text(
         leaderName,
@@ -90,7 +93,8 @@ class _EmployerMembersScreenState extends State<EmployerMembersScreen> {
           contentPadding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
           leading: CircleAvatar(
             radius: 25,
-            backgroundImage: AssetImage('assets/profile_pic.jpg'),
+            backgroundImage: NetworkImage(
+                'https://cdn-icons-png.flaticon.com/128/3135/3135715.png'),
           ),
           title: Text(
             memberName,
@@ -122,8 +126,6 @@ class _EmployerMembersScreenState extends State<EmployerMembersScreen> {
   }
 
   void _saveRoles() {
-    // Implement the logic to save roles, e.g., make an API call to save the changes.
-    // For now, we just print the roles to the console.
-    print('Roles saved: $_memberRoles');
+    moveScreen(context: context, widget: EmployerHomeScreen());
   }
 }

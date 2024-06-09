@@ -1,8 +1,13 @@
+import 'dart:io';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:remote_collab_tool/common/navbar/navbar.dart';
 import 'package:remote_collab_tool/common/appbar/appbar.dart';
 import 'package:remote_collab_tool/theme/pallete.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class ShareFilesScreen extends StatelessWidget {
   @override
@@ -34,6 +39,7 @@ class ShareFilesScreen extends StatelessWidget {
               child: GestureDetector(
                 onTap: () {
                   // Handle file upload area tap
+                  uploadFile();
                 },
                 child: Container(
                   color: Pallete.bgColor, // Semi-transparent color
@@ -84,6 +90,23 @@ class ShareFilesScreen extends StatelessWidget {
       ),
     );
   }
+
+  Future<void> uploadFile() async {
+    // Upload file to Firebase Storage
+    final FilePickerResult? result = await FilePicker.platform.pickFiles();
+    if (result != null) {
+      final File file = File(result.files.single.path!);
+      final String fileName = file.path;
+      final Reference storageRef =
+          FirebaseStorage.instance.ref().child('uploads/$fileName');
+      final UploadTask uploadTask = storageRef.putFile(file);
+      final TaskSnapshot downloadUrl = (await uploadTask);
+      final String url = await downloadUrl.ref.getDownloadURL();
+      print('File uploaded to Firebase Storage: $url');
+    } else {
+      // User canceled the picker
+    }
+  }
 }
 
 class FileHistoryScreen extends StatelessWidget {
@@ -94,25 +117,16 @@ class FileHistoryScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text("File History", style: GoogleFonts.montserrat()),
       ),
-      body: ListView.builder(
-        itemCount: 5, // Example number of files
-        itemBuilder: (context, index) {
-          return ListTile(
-            leading: CircleAvatar(
-              child: Text(
-                  "User"), // You can replace this with the actual user's initials or image
-            ),
-            title: Text("File ${index + 1}", style: GoogleFonts.montserrat()),
-            subtitle: Text("File Type: ${index % 2 == 0 ? 'PDF' : 'DOC'}",
-                style: GoogleFonts.montserrat()),
-            trailing: IconButton(
-              icon: Icon(Icons.open_in_new),
-              onPressed: () {
-                // Handle open button press
-              },
-            ),
-          );
-        },
+      body: ListTile(
+        leading: CircleAvatar(child: Text("User")),
+        title: Text("new.png"),
+        subtitle: Text("File Type: PNG"),
+        trailing: IconButton(
+          icon: Icon(Icons.open_in_new),
+          onPressed: () {
+            // Handle open button press
+          },
+        ),
       ),
     );
   }

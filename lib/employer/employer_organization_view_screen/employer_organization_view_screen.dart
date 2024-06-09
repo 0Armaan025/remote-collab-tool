@@ -2,23 +2,25 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:remote_collab_tool/common/navbar/employer-navbar.dart';
 import 'package:remote_collab_tool/common/navbar/navbar.dart';
 import 'package:remote_collab_tool/constants/utils/utils.dart';
+import 'package:remote_collab_tool/employer/members_screen/employers_member_screen.dart';
 import 'package:remote_collab_tool/features/poll_screen/poll_list_screen.dart';
 import 'package:remote_collab_tool/features/pomodoro_timer/pomodoro_timer_screen.dart';
 import 'package:remote_collab_tool/features/share_files/share_files_screen.dart';
 import 'package:remote_collab_tool/theme/pallete.dart';
 
-class EmployeeOrganizationViewScreen extends StatefulWidget {
-  const EmployeeOrganizationViewScreen({super.key});
+class EmployerOrganizationViewScreen extends StatefulWidget {
+  const EmployerOrganizationViewScreen({super.key});
 
   @override
-  State<EmployeeOrganizationViewScreen> createState() =>
-      _EmployeeOrganizationViewScreenState();
+  State<EmployerOrganizationViewScreen> createState() =>
+      _EmployerOrganizationViewScreenState();
 }
 
-class _EmployeeOrganizationViewScreenState
-    extends State<EmployeeOrganizationViewScreen>
+class _EmployerOrganizationViewScreenState
+    extends State<EmployerOrganizationViewScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
@@ -82,7 +84,7 @@ class _EmployeeOrganizationViewScreenState
           ],
         ),
       ),
-      bottomNavigationBar: MyBottomNavigationBar(),
+      bottomNavigationBar: MyEmployerBottomNavigationBar(),
       backgroundColor: Pallete.bgColor,
       body: Column(
         children: [
@@ -91,7 +93,7 @@ class _EmployeeOrganizationViewScreenState
               controller: _tabController,
               children: [
                 TasksScreen(),
-                MembersScreen(),
+                EmployerMembersScreen(),
                 ChatScreen(),
               ],
             ),
@@ -120,18 +122,16 @@ class _TasksScreenState extends State<TasksScreen> {
         padding: EdgeInsets.symmetric(vertical: 20, horizontal: 10),
         children: [
           // Section: My Tasks
-          _buildSectionHeader('My Tasks'),
-          _buildTaskItem('Task 1', 0),
-          _buildTaskItem('Task 2', 1),
-          _buildTaskItem('Task 3', 2),
-          // Section: Groupmates' Tasks
-          _buildSectionHeader('Groupmates\' Tasks'),
+
+          _buildSectionHeader(' Tasks'),
           _buildGroupmateTaskItem(
-              'Think of a hackathon', Icons.close, 'Sanjay', '24h'),
+              'Host a hackathon', Icons.close, 'Armaan', '24h'),
           _buildGroupmateTaskItem(
-              'Plan a meeting', Icons.check, 'Varun', '12h'),
+              'Search for sponsors', Icons.check, 'Varun', '12h'),
           _buildGroupmateTaskItem(
-              'Research on Idea', Icons.close, 'MrFeast', '48h'),
+              'Contact them', Icons.close, 'MrFeast', '48h'),
+          _buildGroupmateTaskItem(
+              'Make google form', Icons.close, 'Sanjay', '48h'),
           const SizedBox(height: 40),
           Center(
             child: InkWell(
@@ -242,82 +242,6 @@ class _TasksScreenState extends State<TasksScreen> {
           Text(
             timeLeft,
             style: TextStyle(color: Colors.white),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class MembersScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-
-    return Container(
-      margin: EdgeInsets.only(top: size.height * 0.2),
-      child: ListView(
-        padding: EdgeInsets.symmetric(horizontal: 20),
-        children: [
-          _buildSectionHeader('Leader'),
-          _buildLeaderTile('Fire Squad',
-              'https://media.discordapp.net/attachments/1248667871954079917/1249434675932434462/image.png?ex=66674a38&is=6665f8b8&hm=cb9ec2fce2c5ffbeae3d78ff6ecb7c7918a86273894f145900795e739108c1f2&=&format=webp&quality=lossless&width=477&height=453'),
-          _buildSectionHeader('Members'),
-          _buildMemberTile('Armaan',
-              'https://cdn-icons-png.flaticon.com/128/3135/3135715.png'),
-          _buildMemberTile('Varun',
-              'https://cdn-icons-png.flaticon.com/128/3135/3135715.png'),
-          _buildMemberTile('MrFeast',
-              'https://cdn-icons-png.flaticon.com/128/3135/3135715.png'),
-          _buildMemberTile('Sanjay',
-              'https://cdn-icons-png.flaticon.com/128/3135/3135715.png'),
-          // Add more member tiles as needed
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSectionHeader(String title) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10),
-      child: Text(
-        title,
-        style: GoogleFonts.poppins(
-          fontSize: 18,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildLeaderTile(String leaderName, String profileImage) {
-    return ListTile(
-      title: Row(
-        children: [
-          CircleAvatar(
-            backgroundImage: NetworkImage(profileImage),
-          ),
-          SizedBox(width: 10),
-          Text(
-            leaderName,
-            style: GoogleFonts.poppins(),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildMemberTile(String memberName, String profileImage) {
-    return ListTile(
-      title: Row(
-        children: [
-          CircleAvatar(
-            backgroundImage: NetworkImage(profileImage),
-          ),
-          SizedBox(width: 10),
-          Text(
-            memberName,
-            style: GoogleFonts.poppins(),
           ),
         ],
       ),
