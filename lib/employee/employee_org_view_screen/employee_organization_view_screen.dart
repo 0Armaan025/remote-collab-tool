@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:remote_collab_tool/common/appbar/appbar.dart';
 import 'package:remote_collab_tool/common/navbar/navbar.dart';
 import 'package:remote_collab_tool/theme/pallete.dart';
 
@@ -300,9 +302,126 @@ class MembersScreen extends StatelessWidget {
   }
 }
 
-class ChatScreen extends StatelessWidget {
+class ChatScreen extends StatefulWidget {
+  @override
+  _ChatScreenState createState() => _ChatScreenState();
+}
+
+class _ChatScreenState extends State<ChatScreen> {
+  final List<Message> messages = [
+    Message(content: "Hello!", sender: "Alice", isMe: false),
+    Message(content: "Hi, how are you?", sender: "Me", isMe: true),
+    Message(content: "I'm good, thanks!", sender: "Alice", isMe: false),
+    Message(content: "What about you?", sender: "Alice", isMe: false),
+    Message(content: "I'm doing well too!", sender: "Me", isMe: true),
+  ];
+
+  final TextEditingController _controller = TextEditingController();
+
+  void _sendMessage() {
+    if (_controller.text.isEmpty) return;
+    setState(() {
+      messages
+          .add(Message(content: _controller.text, sender: "Me", isMe: true));
+      _controller.clear();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Center(child: Text('Chat Screen'));
+    return Scaffold(
+      backgroundColor: Pallete.bgColor,
+      appBar: createAppBar(),
+      bottomNavigationBar: MyBottomNavigationBar(),
+      body: Column(
+        children: <Widget>[
+          Expanded(
+            child: ListView.builder(
+              reverse: true,
+              itemCount: messages.length,
+              itemBuilder: (context, index) {
+                final message = messages[messages.length - 1 - index];
+                return ChatBubble(message: message);
+              },
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: <Widget>[
+                Expanded(
+                  child: TextField(
+                    controller: _controller,
+                    decoration: InputDecoration(
+                      hintText: 'Type a message',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(30.0),
+                      ),
+                      filled: true,
+                      fillColor: Colors.pink[50],
+                    ),
+                  ),
+                ),
+                IconButton(
+                  icon: Icon(Icons.send, color: Colors.pink),
+                  onPressed: _sendMessage,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class Message {
+  final String content;
+  final String sender;
+  final bool isMe;
+
+  Message({required this.content, required this.sender, required this.isMe});
+}
+
+class ChatBubble extends StatelessWidget {
+  final Message message;
+
+  const ChatBubble({Key? key, required this.message}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final borderRadius = BorderRadius.only(
+      topLeft: Radius.circular(12.0),
+      topRight: Radius.circular(12.0),
+      bottomLeft: message.isMe ? Radius.circular(12.0) : Radius.circular(0),
+      bottomRight: message.isMe ? Radius.circular(0) : Radius.circular(12.0),
+    );
+
+    final alignment =
+        message.isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start;
+
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        crossAxisAlignment: alignment,
+        children: <Widget>[
+          Text(
+            message.sender,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: message.isMe ? Colors.pink : Colors.blue,
+            ),
+          ),
+          Container(
+            decoration: BoxDecoration(
+              color: message.isMe ? Colors.pink[100] : Colors.blue[100],
+              borderRadius: borderRadius,
+            ),
+            padding: const EdgeInsets.all(12.0),
+            child: Text(message.content),
+          ),
+        ],
+      ),
+    );
   }
 }
