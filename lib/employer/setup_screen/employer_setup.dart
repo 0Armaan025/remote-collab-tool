@@ -114,6 +114,7 @@ class _EmployerSetupPageState extends State<EmployerSetupPage> {
                           DateTime.now().millisecondsSinceEpoch.toString();
                       sharedPreferences!.setString("uid", widget.uid);
                       sharedPreferences!.setString("orgID", orgainizationID);
+                      sharedPreferences!.setString("role", "Employer");
                       FirebaseFirestore.instance
                           .collection("organization")
                           .doc(orgainizationID)
@@ -122,6 +123,7 @@ class _EmployerSetupPageState extends State<EmployerSetupPage> {
                         "name": _nameController.text,
                         "email": _nameController.text,
                         "place": _placeController.text,
+                        "Employees": [],
                       });
                       FirebaseFirestore.instance
                           .collection("user")

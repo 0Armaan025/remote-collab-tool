@@ -4,11 +4,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:remote_collab_tool/constants/utils/utils.dart';
 import 'package:remote_collab_tool/employer/setup_screen/employer_setup.dart';
 import 'package:remote_collab_tool/features/auth/screens/sign_in_page.dart';
+import 'package:remote_collab_tool/global.dart';
 import 'package:remote_collab_tool/theme/pallete.dart';
+import '../../../employee/home_screen/employee_home_screen.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({Key? key}) : super(key: key);
@@ -160,6 +163,9 @@ class _SignUpPageState extends State<SignUpPage> {
                 },
               ),
               SizedBox(height: 15.0),
+
+  
+
               Container(
                   width: double.infinity,
                   alignment: Alignment.centerRight,
@@ -167,25 +173,39 @@ class _SignUpPageState extends State<SignUpPage> {
                     onTap: () {
                       moveScreen(context: context, widget: SignInPage());
                     },
+
                     child: Text("Already a member? Sign in",
                         style: GoogleFonts.aldrich(
                           fontSize: 16.0,
                           fontWeight: FontWeight.w300,
                           color: Color.fromARGB(255, 14, 0, 66),
-                        )),
-                  )),
+
+                        ))),
+              ),
+
+                        
+
               SizedBox(height: 20.0),
               GestureDetector(
                 onTap: () async {
                   // Implement sign-up functionality
+
+                  if (_passwordController.text ==
+                      _confirmPasswordController.text) {
+                    if (_selectedRole == "Employer") {
+
                   if (_selectedRole == "Employer") {
                     if (_passwordController.text ==
                         _confirmPasswordController.text) {
+
                       try {
                         UserCredential value = await FirebaseAuth.instance
                             .createUserWithEmailAndPassword(
                                 email: _emailController.text,
                                 password: _passwordController.text);
+
+
+
                         await FirebaseFirestore.instance
                             .collection("user")
                             .doc(value.user!.uid)
@@ -204,6 +224,37 @@ class _SignUpPageState extends State<SignUpPage> {
                       } catch (e) {
                         print(e);
                       }
+
+                    } else {
+                      try {
+                        UserCredential value = await FirebaseAuth.instance
+                            .createUserWithEmailAndPassword(
+                                email: _emailController.text,
+                                password: _passwordController.text);
+                        await FirebaseFirestore.instance
+                            .collection("user")
+                            .doc(value.user!.uid)
+                            .set({
+                          "uid": value.user!.uid,
+                          "username": _nameController.text,
+                          "role": _selectedRole,
+                          "email": _emailController.text,
+                          "profilePictureUrl":
+                              "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
+                          "organizationID": "",
+                        });
+                        sharedPreferences!.setString("uid", value.user!.uid);
+                        sharedPreferences!.setString("orgID", "");
+
+                        sharedPreferences!.setString("role", "Employee");
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (c) => EmployeeHomeScreen()));
+                      } catch (e) {
+                        print(e);
+                      }
+
                     }
                   }
                 },
