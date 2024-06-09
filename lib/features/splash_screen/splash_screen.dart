@@ -1,6 +1,5 @@
 import 'package:another_flutter_splash_screen/another_flutter_splash_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:remote_collab_tool/features/home/home_page.dart';
 import 'package:remote_collab_tool/features/onboarding_screens/onboarding_screen.dart';
 
 class SplashScreen extends StatefulWidget {

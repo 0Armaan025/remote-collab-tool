@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:remote_collab_tool/common/appbar/appbar.dart';
@@ -307,36 +309,30 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
-  final List<Message> messages = [
-    Message(content: "Hello!", sender: "Alice", isMe: false),
-    Message(content: "Hi, how are you?", sender: "Me", isMe: true),
-    Message(content: "I'm good, thanks!", sender: "Alice", isMe: false),
-    Message(content: "What about you?", sender: "Alice", isMe: false),
-    Message(content: "I'm doing well too!", sender: "Me", isMe: true),
-  ];
-
   final TextEditingController _controller = TextEditingController();
 
   void _sendMessage() {
     if (_controller.text.isEmpty) return;
-    setState(() {
-      messages
-          .add(Message(content: _controller.text, sender: "Me", isMe: true));
-      _controller.clear();
+    FirebaseFirestore.instance.collection('messages').add({
+      'content': _controller.text,
+      'sender': FirebaseAuth.instance.currentUser?.uid ??
+          '', // Replace with actual user data
+      'timestamp': FieldValue.serverTimestamp(),
     });
+    _controller.clear();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Pallete.bgColor,
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text('Chat'),
         actions: [
           IconButton(
             icon: Icon(Icons.poll),
             onPressed: () {
-              setState(() {});
+              // Navigate to poll screen or show poll modal
             },
           ),
         ],
@@ -344,12 +340,31 @@ class _ChatScreenState extends State<ChatScreen> {
       body: Column(
         children: <Widget>[
           Expanded(
-            child: ListView.builder(
-              reverse: true,
-              itemCount: messages.length,
-              itemBuilder: (context, index) {
-                final message = messages[messages.length - 1 - index];
-                return ChatBubble(message: message);
+            child: StreamBuilder(
+              stream: FirebaseFirestore.instance
+                  .collection('messages')
+                  .orderBy('timestamp', descending: true)
+                  .snapshots(),
+              builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                if (!snapshot.hasData) {
+                  return Center(child: CircularProgressIndicator());
+                }
+                final messages = snapshot.data!.docs.map((doc) {
+                  return Message(
+                    content: doc['content'],
+                    sender: doc['sender'],
+                    isMe: doc['sender'] ==
+                        FirebaseAuth.instance.currentUser!
+                            .uid, // Replace with actual user check
+                  );
+                }).toList();
+                return ListView.builder(
+                  reverse: true,
+                  itemCount: messages.length,
+                  itemBuilder: (context, index) {
+                    return ChatBubble(message: messages[index]);
+                  },
+                );
               },
             ),
           ),
