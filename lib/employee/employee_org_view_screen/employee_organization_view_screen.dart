@@ -96,7 +96,14 @@ class _EmployeeOrganizationViewScreenState
   }
 }
 
-class TasksScreen extends StatelessWidget {
+class TasksScreen extends StatefulWidget {
+  @override
+  _TasksScreenState createState() => _TasksScreenState();
+}
+
+class _TasksScreenState extends State<TasksScreen> {
+  List<bool> _taskCompletion = [false, false, false];
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -108,14 +115,33 @@ class TasksScreen extends StatelessWidget {
         children: [
           // Section: My Tasks
           _buildSectionHeader('My Tasks'),
-          _buildTaskItem('Task 1'),
-          _buildTaskItem('Task 2'),
-          _buildTaskItem('Task 3'),
+          _buildTaskItem('Task 1', 0),
+          _buildTaskItem('Task 2', 1),
+          _buildTaskItem('Task 3', 2),
           // Section: Groupmates' Tasks
           _buildSectionHeader('Groupmates\' Tasks'),
           _buildGroupmateTaskItem('Task A', Icons.close, 'John', '24h'),
           _buildGroupmateTaskItem('Task B', Icons.check, 'Emma', '12h'),
           _buildGroupmateTaskItem('Task C', Icons.close, 'Mike', '48h'),
+          const SizedBox(height: 40),
+          Center(
+            child: Container(
+              width: double.infinity,
+              height: size.height * 0.05,
+              margin: const EdgeInsets.symmetric(horizontal: 50),
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: Pallete.buttonColor,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Text(
+                "Share files 📁",
+                style: GoogleFonts.roboto(
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -134,7 +160,7 @@ class TasksScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildTaskItem(String taskName) {
+  Widget _buildTaskItem(String taskName, int index) {
     return ListTile(
       title: Text(
         taskName,
@@ -144,9 +170,12 @@ class TasksScreen extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Checkbox(
-            value: false, // Change this to manage task completion
+            value:
+                _taskCompletion[index], // Change this to manage task completion
             onChanged: (value) {
-              // Handle task completion
+              setState(() {
+                _taskCompletion[index] = value!;
+              });
             },
           ),
           SizedBox(width: 10),
@@ -173,7 +202,6 @@ class TasksScreen extends StatelessWidget {
         children: [
           Icon(icon),
           SizedBox(width: 10),
-          // Timer Widget (You can replace this with your timer implementation)
           _buildTimer(timeLeft),
         ],
       ),
@@ -193,7 +221,7 @@ class TasksScreen extends StatelessWidget {
           Icon(Icons.timer, color: Colors.white),
           SizedBox(width: 5),
           Text(
-            timeLeft, // Example time, replace with actual timer value
+            timeLeft,
             style: TextStyle(color: Colors.white),
           ),
         ],
@@ -205,7 +233,70 @@ class TasksScreen extends StatelessWidget {
 class MembersScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Center(child: Text('Members Screen'));
+    final size = MediaQuery.of(context).size;
+
+    return Container(
+      margin: EdgeInsets.only(top: size.height * 0.2),
+      child: ListView(
+        padding: EdgeInsets.symmetric(horizontal: 20),
+        children: [
+          _buildSectionHeader('Leader'),
+          _buildLeaderTile('John Doe', 'assets/profile_pic.jpg'),
+          _buildSectionHeader('Members'),
+          _buildMemberTile('Member 1', 'assets/profile_pic.jpg'),
+          _buildMemberTile('Member 2', 'assets/profile_pic.jpg'),
+          _buildMemberTile('Member 3', 'assets/profile_pic.jpg'),
+          // Add more member tiles as needed
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSectionHeader(String title) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      child: Text(
+        title,
+        style: GoogleFonts.poppins(
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLeaderTile(String leaderName, String profileImage) {
+    return ListTile(
+      title: Row(
+        children: [
+          CircleAvatar(
+            backgroundImage: AssetImage(profileImage),
+          ),
+          SizedBox(width: 10),
+          Text(
+            leaderName,
+            style: GoogleFonts.poppins(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMemberTile(String memberName, String profileImage) {
+    return ListTile(
+      title: Row(
+        children: [
+          CircleAvatar(
+            backgroundImage: AssetImage(profileImage),
+          ),
+          SizedBox(width: 10),
+          Text(
+            memberName,
+            style: GoogleFonts.poppins(),
+          ),
+        ],
+      ),
+    );
   }
 }
 
