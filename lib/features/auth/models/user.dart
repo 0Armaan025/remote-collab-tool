@@ -7,12 +7,14 @@ class UserModal {
   final String username;
   final String profilePictureUrl;
   final String points;
+  final String role;
   UserModal({
     required this.uid,
     required this.email,
     required this.username,
     required this.profilePictureUrl,
     required this.points,
+    required this.role,
   });
 
   UserModal copyWith({
@@ -21,6 +23,7 @@ class UserModal {
     String? username,
     String? profilePictureUrl,
     String? points,
+    String? role,
   }) {
     return UserModal(
       uid: uid ?? this.uid,
@@ -28,6 +31,7 @@ class UserModal {
       username: username ?? this.username,
       profilePictureUrl: profilePictureUrl ?? this.profilePictureUrl,
       points: points ?? this.points,
+      role: role ?? this.role,
     );
   }
 
@@ -38,6 +42,7 @@ class UserModal {
       'username': username,
       'profilePictureUrl': profilePictureUrl,
       'points': points,
+      'role': role,
     };
   }
 
@@ -48,6 +53,7 @@ class UserModal {
       username: map['username'] as String,
       profilePictureUrl: map['profilePictureUrl'] as String,
       points: map['points'] as String,
+      role: map['role'] as String,
     );
   }
 
@@ -58,7 +64,7 @@ class UserModal {
 
   @override
   String toString() {
-    return 'UserModal(uid: $uid, email: $email, username: $username, profilePictureUrl: $profilePictureUrl, points: $points)';
+    return 'UserModal(uid: $uid, email: $email, username: $username, profilePictureUrl: $profilePictureUrl, points: $points, role: $role)';
   }
 
   @override
@@ -69,7 +75,8 @@ class UserModal {
         other.email == email &&
         other.username == username &&
         other.profilePictureUrl == profilePictureUrl &&
-        other.points == points;
+        other.points == points &&
+        other.role == role;
   }
 
   @override
@@ -78,6 +85,7 @@ class UserModal {
         email.hashCode ^
         username.hashCode ^
         profilePictureUrl.hashCode ^
-        points.hashCode;
+        points.hashCode ^
+        role.hashCode;
   }
 }

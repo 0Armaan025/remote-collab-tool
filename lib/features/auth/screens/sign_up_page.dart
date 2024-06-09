@@ -15,6 +15,7 @@ class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
       TextEditingController();
+  String? _selectedRole;
 
   @override
   void dispose() {
@@ -120,11 +121,36 @@ class _SignUpPageState extends State<SignUpPage> {
                   labelText: 'Confirm Password',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(20.0),
+                    
                   ),
                   filled: true,
                   fillColor: Colors.pink[50],
                   prefixIcon: Icon(Icons.lock_outline),
                 ),
+              ),
+              SizedBox(height: 10.0),
+              DropdownButtonFormField<String>(
+                value: _selectedRole,
+                decoration: InputDecoration(
+                  labelText: 'Role',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                  ),
+                  filled: true,
+                  fillColor: Colors.pink[50],
+                  prefixIcon: Icon(Icons.person_outline),
+                ),
+                items: <String>['Employee', 'Employer'].map((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
+                onChanged: (String? newValue) {
+                  setState(() {
+                    _selectedRole = newValue;
+                  });
+                },
               ),
               SizedBox(height: 15.0),
               Container(
