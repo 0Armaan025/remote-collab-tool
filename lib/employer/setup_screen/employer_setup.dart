@@ -1,35 +1,30 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:remote_collab_tool/common/appbar/appbar.dart';
+import 'package:remote_collab_tool/employer/home_screen/employer_home_screen.dart';
+import 'package:remote_collab_tool/global.dart';
 import 'dart:io';
 
 import 'package:remote_collab_tool/theme/pallete.dart';
 
 class EmployerSetupPage extends StatefulWidget {
-  const EmployerSetupPage({super.key});
+  String uid;
+  EmployerSetupPage({
+    required this.uid,
+  });
 
   @override
   State<EmployerSetupPage> createState() => _EmployerSetupPageState();
 }
 
 class _EmployerSetupPageState extends State<EmployerSetupPage> {
-  File? _imageFile;
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _placeController = TextEditingController();
-
-  Future<void> _pickImage() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles(
-      type: FileType.image,
-    );
-
-    if (result != null) {
-      setState(() {
-        _imageFile = File(result.files.single.path!);
-      });
-    }
-  }
 
   @override
   void dispose() {
@@ -65,45 +60,6 @@ class _EmployerSetupPageState extends State<EmployerSetupPage> {
                   ),
                 ),
                 const SizedBox(height: 20),
-                Container(
-                  width: double.infinity,
-                  height: size.height * 0.2,
-                  alignment: Alignment.center,
-                  padding: const EdgeInsets.all(16.0),
-                  margin: const EdgeInsets.symmetric(vertical: 20.0),
-                  decoration: BoxDecoration(
-                    color: Colors.grey[200],
-                    border: Border.all(color: Colors.black),
-                    borderRadius: BorderRadius.circular(12.0),
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      if (_imageFile != null)
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(8.0),
-                          child: Image.file(
-                            _imageFile!,
-                            height: 100,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      if (_imageFile == null)
-                        IconButton(
-                          icon: Icon(Icons.add_a_photo,
-                              size: 40, color: Colors.grey[600]),
-                          onPressed: _pickImage,
-                        ),
-                      if (_imageFile != null)
-                        IconButton(
-                          icon: Icon(Icons.edit,
-                              size: 30, color: Colors.grey[600]),
-                          onPressed: _pickImage,
-                        ),
-                    ],
-                  ),
-                ),
                 TextField(
                   controller: _nameController,
                   decoration: InputDecoration(
@@ -150,8 +106,34 @@ class _EmployerSetupPageState extends State<EmployerSetupPage> {
                 ),
                 const SizedBox(height: 30),
                 GestureDetector(
-                  onTap: () {
-                    // Handle go ahead action
+                  onTap: () async {
+                    if (_nameController.text != "" &&
+                        _emailController.text != "" &&
+                        _placeController.text != "") {
+                      String orgainizationID =
+                          DateTime.now().millisecondsSinceEpoch.toString();
+                      sharedPreferences!.setString("uid", widget.uid);
+                      sharedPreferences!.setString("orgID", orgainizationID);
+                      FirebaseFirestore.instance
+                          .collection("organization")
+                          .doc(orgainizationID)
+                          .set({
+                        "organizationID": orgainizationID,
+                        "name": _nameController.text,
+                        "email": _nameController.text,
+                        "place": _placeController.text,
+                      });
+                      FirebaseFirestore.instance
+                          .collection("user")
+                          .doc(widget.uid)
+                          .update({
+                        "orgainizationID": orgainizationID,
+                      });
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (c) => EmployerHomeScreen()));
+                    }
                   },
                   child: Container(
                     width: double.infinity,
