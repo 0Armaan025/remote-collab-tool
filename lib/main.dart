@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:remote_collab_tool/features/document_editing/document_editing_screen.dart';
 
 import 'package:remote_collab_tool/features/poll_screen/poll_list_screen.dart';
 
@@ -25,7 +26,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: PollListScreen(),
+      home: DocumentEditingScreen(),
     );
   }
 }
