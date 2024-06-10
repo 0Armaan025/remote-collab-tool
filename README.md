@@ -14,7 +14,7 @@ TaskMate is your ultimate companion for staying organized, managing tasks, and b
 1. **Installation**: Simply clone the TaskMate repository to your local machine.
 
     ```bash
-    git clone https://github.com/your-username/TaskMate.git
+    git clone https://github.com/0Armaan025/remote-collab-tool.git
     ```
 
 2. **Run it**: You can run the app if you have flutter installed.
